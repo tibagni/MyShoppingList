@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minha Lista de Compras</string>
+    <string name="title_shopping_list">Lista de compras</string>
+    <string name="title_stock_items">Estoque</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_confirm">Confirmar</string>
+    <string name="action_delete">Remover</string>
+    <string name="action_add_new_item">+ Adicionar novo item...</string>
+    <string name="hint_item_name">Nome</string>
+    <string name="hint_item_icon">Ícone</string>
+    <string name="title_new_stock_item">Novo Item de Estoque</string>
+    <string name="navigation_drawer_open">Abrir menu de navegação</string>
+    <string name="navigation_drawer_close">Fechar menu de navegação</string>
+
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="title_activity_add_stock_item">Adicionar Item de Estoque</string>
+    <string name="error_empty_name">Preencha o nome</string>
+    <string name="completed_header">Concluídos</string>
+
+    <string name="search_title">Busca</string>
+    <string name="empty_stockItems">Não há items no estoque.</string>
+    <string name="empty_shoppingIList">Não há items na lista de compras.</string>
+    <string name="action_clear">Limpar lista de compras</string>
+</resources>
