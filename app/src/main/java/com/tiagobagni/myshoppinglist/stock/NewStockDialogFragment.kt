@@ -1,20 +1,12 @@
 package com.tiagobagni.myshoppinglist.stock
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.SimpleAdapter
 import com.tiagobagni.myshoppinglist.R
-import com.tiagobagni.myshoppinglist.icons.Icon
 import com.tiagobagni.myshoppinglist.icons.IconsController
 import kotlinx.android.synthetic.main.create_stock_item.view.*
 

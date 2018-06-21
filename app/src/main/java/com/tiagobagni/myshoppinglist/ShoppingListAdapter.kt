@@ -13,10 +13,10 @@ import kotlinx.android.synthetic.main.list_header.view.*
 import kotlinx.android.synthetic.main.shopping_list_item.view.*
 
 class ShoppingListAdapter(
-    private val listener: ClickListener<ShoppingListItem>
+    private val clickListener: ClickListener<ShoppingListItem>,
+    private val longClickListener: ClickListener<ShoppingListItem>
 ) : RecyclerListAdapter<AdapterItem<ShoppingListItem>, ShoppingListAdapter.ViewHolder>(),
     AdapterClickListener {
-
     private val headerItem = AdapterItem<ShoppingListItem>(null, TYPE_HEADER)
 
     companion object {
@@ -27,8 +27,7 @@ class ShoppingListAdapter(
     class ViewHolder(
         private val view: View,
         private val clickListener: AdapterClickListener
-    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
-
+    ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
         fun bind(item: ShoppingListItem) {
             with(view) {
                 productName.text = item.name
@@ -42,6 +41,7 @@ class ShoppingListAdapter(
                 checkBox.setImageResource(checkedRes)
 
                 setOnClickListener(this@ViewHolder)
+                setOnLongClickListener(this@ViewHolder)
                 if (item.icon != Icon.NONE) {
                     itemIcon.setImageResource(item.icon.resId)
                 }
@@ -57,6 +57,11 @@ class ShoppingListAdapter(
         override fun onClick(view: View?) {
             clickListener.onItemClicked(layoutPosition)
         }
+
+        override fun onLongClick(v: View?): Boolean {
+            clickListener.onItemLongClicked(layoutPosition)
+            return true
+        }
     }
 
     override fun areItemsTheSame(
@@ -69,7 +74,7 @@ class ShoppingListAdapter(
         oldItem: AdapterItem<ShoppingListItem>,
         newItem: AdapterItem<ShoppingListItem>
     ) =
-        oldItem.value?.checked == newItem.value?.checked
+        oldItem.value == newItem.value
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -91,8 +96,12 @@ class ShoppingListAdapter(
 
     override fun onItemClicked(itemPosition: Int) {
         val item = list[itemPosition].value
-        item?.let { listener(it) }
+        item?.let { clickListener(it) }
+    }
 
+    override fun onItemLongClicked(itemPosition: Int) {
+        val item = list[itemPosition].value
+        item?.let { longClickListener(it) }
     }
 
     override fun onPrepareNewData(newData: List<AdapterItem<ShoppingListItem>>):

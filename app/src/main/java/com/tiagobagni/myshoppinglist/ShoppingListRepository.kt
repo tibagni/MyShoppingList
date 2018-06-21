@@ -5,7 +5,7 @@ import org.jetbrains.anko.doAsync
 class ShoppingListRepository(database: MyShoppingListDatabase) {
     private val shoppingListDao = database.shoppingListDao()
 
-    fun getShoppingList() = shoppingListDao.getAll()
+    fun getShoppingList() = shoppingListDao.getAllOrdered()
 
     fun addShoppingListItems(items: List<ShoppingListItem>){
         doAsync {
@@ -22,6 +22,12 @@ class ShoppingListRepository(database: MyShoppingListDatabase) {
     fun deleteAll() {
         doAsync {
             shoppingListDao.deleteAll()
+        }
+    }
+
+    fun updateItem(item: ShoppingListItem) {
+        doAsync {
+            shoppingListDao.updateItem(item)
         }
     }
 

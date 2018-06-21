@@ -6,19 +6,23 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import android.widget.Toast
 import com.tiagobagni.myshoppinglist.adapter.AdapterItem
 import com.tiagobagni.myshoppinglist.extensions.startActivityForResult
 import com.tiagobagni.myshoppinglist.stock.AddStockItemActivity
 import com.tiagobagni.myshoppinglist.stock.StockItem
 import kotlinx.android.synthetic.main.fragment_shopping_list.*
+import org.jetbrains.anko.toast
 import org.koin.android.architecture.ext.viewModel
 
-class ShoppingListFragment : Fragment() {
+class ShoppingListFragment : Fragment(), CommentDialogFragment.Callback {
+
     private companion object {
         const val ADD_STOCK_ITEM_REQUEST_CODE = 1
     }
 
-    private val shoppingListAdapter = ShoppingListAdapter(this::onItemClicked)
+    private val shoppingListAdapter = ShoppingListAdapter(this::onItemClicked,
+        this::onItemLongClicked)
     private val viewModel by viewModel<ShoppingListViewModel>()
     private val mainActivity by lazy { activity as MainActivity }
 
@@ -83,5 +87,14 @@ class ShoppingListFragment : Fragment() {
 
     private fun onItemClicked(item: ShoppingListItem) {
         viewModel.toggleItemChecked(item)
+    }
+
+    private fun onItemLongClicked(item: ShoppingListItem) {
+        val commentDialog = CommentDialogFragment.newInstance(item)
+        commentDialog.show(childFragmentManager, "comment")
+    }
+
+    override fun onCommentEdited(item: ShoppingListItem, comment: String) {
+        viewModel.setComment(item, comment)
     }
 }

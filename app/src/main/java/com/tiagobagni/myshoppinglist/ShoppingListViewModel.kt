@@ -15,6 +15,11 @@ class ShoppingListViewModel(private val repository: ShoppingListRepository) : Vi
         repository.setItemChecked(item.id!!, newChecked)
     }
 
+    fun setComment(item: ShoppingListItem, comment: String) {
+        val updatedItem = item.copy(comment = comment)
+        repository.updateItem(updatedItem)
+    }
+
     fun clear() {
         repository.deleteAll()
     }
