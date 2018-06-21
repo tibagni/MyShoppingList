@@ -1,10 +1,15 @@
 package com.tiagobagni.selectionmode
 
+import android.os.Bundle
 import com.tiagobagni.myshoppinglist.extensions.splitRanges
 
 class SelectionModeHelper(private val callback: ChoiceModeHelperCallback) {
     val selectedItems = mutableSetOf<Int>()
     internal var onSelectionCleared: ((Set<Pair<Int, Int>>) -> Unit)? = null
+
+    companion object {
+        private const val STATE_ITEMS = "items"
+    }
 
     val selectedCount: Int
         get() = selectedItems.size
@@ -54,6 +59,15 @@ class SelectionModeHelper(private val callback: ChoiceModeHelperCallback) {
             val ranges = clearedItems.toSortedSet().splitRanges()
             onSelectionCleared?.invoke(ranges)
         }
+    }
+
+    fun saveState(bundle: Bundle) {
+        bundle.putIntArray(STATE_ITEMS, selectedItems.toIntArray())
+    }
+
+    fun restoreFromState(bundle: Bundle) {
+        val array = bundle.getIntArray(STATE_ITEMS)
+        array?.forEach { selectedItems.add(it) }
     }
 }
 

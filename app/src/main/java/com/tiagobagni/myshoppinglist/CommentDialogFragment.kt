@@ -5,8 +5,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.widget.EditText
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.TextView

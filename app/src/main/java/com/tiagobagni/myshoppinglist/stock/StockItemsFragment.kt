@@ -70,6 +70,18 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
             dialog.show(childFragmentManager, "newStockItem")
         }
         mainActivity?.title = getString(R.string.title_stock_items)
+
+        savedInstanceState?.let {
+            selectionModeHelper.restoreFromState(it)
+            if (selectionModeHelper.isInSelectionMode()) {
+                startSelectionMode()
+                updateSelectionCount()
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        selectionModeHelper.saveState(outState)
     }
 
     override fun onQueryTextSubmit(query: String?) = true
