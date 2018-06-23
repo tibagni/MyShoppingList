@@ -7,15 +7,11 @@ class ShoppingListRepository(database: MyShoppingListDatabase) {
 
     fun getShoppingList() = shoppingListDao.getAllOrdered()
 
+    fun getCheckedItems() = shoppingListDao.getChecked()
+
     fun addShoppingListItems(items: List<ShoppingListItem>){
         doAsync {
             shoppingListDao.insert(items)
-        }
-    }
-
-    fun setItemChecked(itemId: Int, checked: Boolean) {
-        doAsync {
-            shoppingListDao.setChecked(itemId, checked)
         }
     }
 

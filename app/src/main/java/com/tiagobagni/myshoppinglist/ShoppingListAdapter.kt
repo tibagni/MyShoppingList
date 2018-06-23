@@ -8,6 +8,7 @@ import com.tiagobagni.myshoppinglist.adapter.AdapterItem
 import com.tiagobagni.myshoppinglist.adapter.RecyclerListAdapter
 import com.tiagobagni.myshoppinglist.extensions.AdapterClickListener
 import com.tiagobagni.myshoppinglist.extensions.ClickListener
+import com.tiagobagni.myshoppinglist.extensions.toCurrencyFormat
 import com.tiagobagni.myshoppinglist.icons.Icon
 import kotlinx.android.synthetic.main.list_header.view.*
 import kotlinx.android.synthetic.main.shopping_list_item.view.*
@@ -33,12 +34,14 @@ class ShoppingListAdapter(
                 productName.text = item.name
                 comments.text = item.comment
 
-                val checkedRes = if (item.checked) {
-                    R.drawable.ic_check_checked
+                if (item.checked) {
+                    checkBox.setImageResource(R.drawable.ic_check_checked)
+                    pricePaid.visibility = View.VISIBLE
+                    pricePaid.text = item.pricePaid.toCurrencyFormat()
                 } else {
-                    R.drawable.ic_check_unchecked
+                    checkBox.setImageResource(R.drawable.ic_check_unchecked)
+                    pricePaid.visibility = View.GONE
                 }
-                checkBox.setImageResource(checkedRes)
 
                 setOnClickListener(this@ViewHolder)
                 setOnLongClickListener(this@ViewHolder)

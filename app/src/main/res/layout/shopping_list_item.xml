@@ -21,11 +21,13 @@
 
     <TextView
         android:id="@+id/productName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textAppearance="@style/ItemHead"
+        app:layout_constraintEnd_toStartOf="@+id/pricePaid"
         app:layout_constraintStart_toEndOf="@+id/checkBox"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Detergent" />
@@ -64,5 +66,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/ic_grocery_store" />
+
+    <TextView
+        android:id="@+id/pricePaid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/itemIcon"
+        app:layout_constraintEnd_toStartOf="@+id/itemIcon"
+        app:layout_constraintTop_toTopOf="@+id/itemIcon"
+        tools:text="$45.00" />
 
 </android.support.constraint.ConstraintLayout>

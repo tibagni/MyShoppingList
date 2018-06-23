@@ -3,28 +3,37 @@ package com.tiagobagni.myshoppinglist
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
 import com.tiagobagni.myshoppinglist.adapter.AdapterItem
-import com.tiagobagni.myshoppinglist.extensions.startActivityForResult
+import com.tiagobagni.myshoppinglist.extensions.*
 import com.tiagobagni.myshoppinglist.stock.AddStockItemActivity
 import com.tiagobagni.myshoppinglist.stock.StockItem
 import kotlinx.android.synthetic.main.fragment_shopping_list.*
-import org.jetbrains.anko.toast
 import org.koin.android.architecture.ext.viewModel
+import android.widget.TextView
 
-class ShoppingListFragment : Fragment(), CommentDialogFragment.Callback {
+
+class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
 
     private companion object {
         const val ADD_STOCK_ITEM_REQUEST_CODE = 1
+
+        private const val COMMENT_DIALOG = 0
+        private const val PRICE_DIALOG = 1
     }
 
-    private val shoppingListAdapter = ShoppingListAdapter(this::onItemClicked,
-        this::onItemLongClicked)
+    private val shoppingListAdapter = ShoppingListAdapter(
+        this::onItemClicked,
+        this::onItemLongClicked
+    )
     private val viewModel by viewModel<ShoppingListViewModel>()
     private val mainActivity by lazy { activity as MainActivity }
+
+    private var snackbar: Snackbar? = null
 
     init {
         setHasOptionsMenu(true)
@@ -59,6 +68,17 @@ class ShoppingListFragment : Fragment(), CommentDialogFragment.Callback {
                 shoppingListAdapter.updateData(list)
             })
 
+        viewModel.checkedItems.observe(this, Observer {
+            val numOfCheckedItems = it?.size ?: 0
+            if (numOfCheckedItems > 0) {
+                val totalSpent =
+                    it?.map { item -> item.pricePaid }?.reduce { acc, d -> acc + d } ?: 0.0
+                showTotalSpent(totalSpent)
+            } else {
+                hideTotalSpent()
+            }
+        })
+
         shoppingList.layoutManager = LinearLayoutManager(context)
         shoppingList.emptyView = emptyView
         shoppingList.adapter = shoppingListAdapter
@@ -67,6 +87,13 @@ class ShoppingListFragment : Fragment(), CommentDialogFragment.Callback {
             startActivityForResult<AddStockItemActivity>(ADD_STOCK_ITEM_REQUEST_CODE)
         }
         mainActivity.title = getString(R.string.title_shopping_list)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Hide the snackbar here as we are being destroyed. Probably
+        // another fragment will be shown
+        hideTotalSpent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -86,15 +113,52 @@ class ShoppingListFragment : Fragment(), CommentDialogFragment.Callback {
     }
 
     private fun onItemClicked(item: ShoppingListItem) {
-        viewModel.toggleItemChecked(item)
+        if (item.checked) {
+            viewModel.updateItem(item) { toggleItemChecked() }
+        } else {
+            val priceDialog = InputDialogFragment.newInstance(
+                dialogId = PRICE_DIALOG,
+                item = item,
+                title = getString(R.string.how_much_title),
+                inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
+            )
+            priceDialog.show(childFragmentManager, "price")
+        }
     }
 
     private fun onItemLongClicked(item: ShoppingListItem) {
-        val commentDialog = CommentDialogFragment.newInstance(item)
+        val commentDialog = InputDialogFragment.newInstance(
+            dialogId = COMMENT_DIALOG,
+            item = item,
+            title = getString(R.string.comment_title),
+            description = getString(R.string.shopping_list_item_comment_description),
+            defaultInput = item.comment
+        )
         commentDialog.show(childFragmentManager, "comment")
     }
 
-    override fun onCommentEdited(item: ShoppingListItem, comment: String) {
-        viewModel.setComment(item, comment)
+    private fun showTotalSpent(totalSpent: Double) {
+        val message = getString(R.string.total_spent, totalSpent.toCurrencyFormat())
+        snackbar = shoppingList.showCustomSnack(message, Snackbar.LENGTH_INDEFINITE) {
+            setBackgroundColor(getColor(R.color.background_material_light))
+            val snackBarText = findViewById<TextView>(android.support.design.R.id.snackbar_text)
+            snackBarText.setTextColor(getColor(R.color.secondary_text_default_material_light))
+        }
+    }
+
+    private fun hideTotalSpent() {
+        snackbar?.dismiss()
+    }
+
+    override fun onInputDialogConfirmed(dialogId: Int, item: ShoppingListItem, input: String) {
+        when (dialogId) {
+            COMMENT_DIALOG -> viewModel.updateItem(item) { setComment(input) }
+            PRICE_DIALOG -> {
+                viewModel.updateItem(item) {
+                    toggleItemChecked()
+                    setPricePaid(input.toDoubleOrZero())
+                }
+            }
+        }
     }
 }

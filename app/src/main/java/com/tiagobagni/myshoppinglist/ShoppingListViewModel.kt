@@ -6,21 +6,36 @@ class ShoppingListViewModel(private val repository: ShoppingListRepository) : Vi
 
     val shoppingList = repository.getShoppingList()
 
+    val checkedItems = repository.getCheckedItems()
+
     fun addItems(newItems: List<ShoppingListItem>) {
         repository.addShoppingListItems(newItems)
     }
 
-    fun toggleItemChecked(item: ShoppingListItem) {
-        val newChecked = !item.checked
-        repository.setItemChecked(item.id!!, newChecked)
-    }
-
-    fun setComment(item: ShoppingListItem, comment: String) {
-        val updatedItem = item.copy(comment = comment)
-        repository.updateItem(updatedItem)
+    fun updateItem(item: ShoppingListItem, f: ShoppingListItemUpdater.() -> Unit) {
+        val updater = ShoppingListItemUpdater(item)
+        updater.f()
+        repository.updateItem(updater.item)
     }
 
     fun clear() {
         repository.deleteAll()
+    }
+
+    class ShoppingListItemUpdater(originalItem: ShoppingListItem) {
+        var item = originalItem
+            private set
+
+        fun toggleItemChecked() {
+            item = item.copy(checked = !item.checked)
+        }
+
+        fun setComment(comment: String) {
+            item = item.copy(comment = comment)
+        }
+
+        fun setPricePaid(pricePaid: Double) {
+            item = item.copy(pricePaid = pricePaid)
+        }
     }
 }

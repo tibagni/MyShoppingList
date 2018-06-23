@@ -24,5 +24,6 @@ data class ShoppingListItem(
     val icon: Icon = Icon.NONE,
     val comment: String = "",
     val checked: Boolean = false,
+    val pricePaid: Double = 0.0,
     @PrimaryKey(autoGenerate = true) var id: Int? = null
 ) : Parcelable

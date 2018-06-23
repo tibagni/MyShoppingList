@@ -21,9 +21,6 @@ interface ShoppingListDao {
     @Query("select * from shopping_list_items where checked = 0")
     fun getUnChecked(): LiveData<List<ShoppingListItem>>
 
-    @Query("update shopping_list_items set checked = :checked where id = :id")
-    fun setChecked(id: Int, checked: Boolean)
-
     @Update
     fun updateItem(item: ShoppingListItem)
 

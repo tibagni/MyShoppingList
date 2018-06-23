@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9091448b4f5183d9a7e2427ff08675ac",
+    "identityHash": "8dba5cb43ef0e18cc36a9e2973087d9f",
     "entities": [
       {
         "tableName": "stock_items",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "shopping_list_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `checked` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `checked` INTEGER NOT NULL, `pricePaid` REAL NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "stockItemId",
@@ -68,6 +68,12 @@
             "fieldPath": "checked",
             "columnName": "checked",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePaid",
+            "columnName": "pricePaid",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -101,7 +107,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9091448b4f5183d9a7e2427ff08675ac\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8dba5cb43ef0e18cc36a9e2973087d9f\")"
     ]
   }
 }
