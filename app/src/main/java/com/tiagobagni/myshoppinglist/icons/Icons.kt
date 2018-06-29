@@ -54,7 +54,7 @@ class IconsController(iconsGrid: GridView) {
 private class IconsAdapter(context: Context) : BaseAdapter() {
     private val inflater = LayoutInflater.from(context)
     private val icons = Icon.values().filter { it != Icon.NONE }
-    var selectedPosition = INVALID_POSITION
+    var selectedPosition = 0
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

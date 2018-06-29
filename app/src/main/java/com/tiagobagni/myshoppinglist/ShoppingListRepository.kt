@@ -26,5 +26,4 @@ class ShoppingListRepository(database: MyShoppingListDatabase) {
             shoppingListDao.updateItem(item)
         }
     }
-
 }

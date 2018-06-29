@@ -71,12 +71,12 @@
         android:id="@+id/pricePaid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/itemIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/productName"
         app:layout_constraintEnd_toStartOf="@+id/itemIcon"
         app:layout_constraintTop_toTopOf="@+id/itemIcon"
-        tools:text="$45.00" />
+        tools:text="$45.00"
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>
