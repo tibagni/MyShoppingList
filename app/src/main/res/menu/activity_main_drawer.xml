@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/main_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_shopping_list"
             android:icon="@drawable/ic_menu_shopping_list"
@@ -13,5 +14,13 @@
             android:icon="@drawable/ic_menu_stock"
             android:title="@string/title_stock_items" />
     </group>
+
+    <item android:title="@string/archived_lists_header"
+        android:id="@+id/history_menu_item">
+        <menu>
+            <group android:id="@+id/archived_group"
+                android:checkableBehavior="single"/>
+        </menu>
+    </item>
 
 </menu>

@@ -1,6 +1,8 @@
 package com.tiagobagni.myshoppinglist.extensions
 
+import java.text.DateFormat
 import java.text.NumberFormat
+import java.util.*
 
 operator fun Int.compareTo(otherInt: Int?): Int {
     if (otherInt == null) {
@@ -26,3 +28,5 @@ fun Double.toCurrencyFormat(): String {
     val currencyFormatter = NumberFormat.getCurrencyInstance()
     return currencyFormatter.format(this)
 }
+
+fun Long.toFormattedDate() = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(this))!!

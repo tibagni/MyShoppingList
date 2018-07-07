@@ -28,4 +28,6 @@
     <string name="comment_title">Comment about this item</string>
     <string name="how_much_title">How much was it?</string>
     <string name="total_spent">Total Spent: %1$s</string>
+    <string name="action_archive">Archive</string>
+    <string name="archived_lists_header">Archived lists</string>
 </resources>

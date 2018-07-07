@@ -23,8 +23,13 @@ class AddStockItemActivity : AppCompatActivity(), FabProvider {
     }
 
     override fun configureFab(imageRes: Int?, clickListener: () -> Unit) {
+        fab.show()
         fab.setOnClickListener { clickListener() }
         imageRes?.let { fab.setImageResource(imageRes) }
+    }
+
+    override fun hideFab() {
+        fab.hide()
     }
 
     fun finishWithResult(item: StockItem) {

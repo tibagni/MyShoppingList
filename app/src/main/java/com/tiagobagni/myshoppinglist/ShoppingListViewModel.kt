@@ -1,15 +1,29 @@
 package com.tiagobagni.myshoppinglist
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 
 class ShoppingListViewModel(private val repository: ShoppingListRepository) : ViewModel() {
 
     val shoppingList = repository.getShoppingList()
-
     val checkedItems = repository.getCheckedItems()
+
+    val listCompletedStatus: LiveData<Boolean> = Transformations.map(shoppingList) {
+        it.isNotEmpty() && it.map { it.checked }.reduce { acc, b -> acc && b }
+    }
 
     fun addItems(newItems: List<ShoppingListItem>) {
         repository.addShoppingListItems(newItems)
+    }
+
+    fun archiveList() {
+        val allItems = shoppingList.value
+        allItems?.let {
+            repository.archive(it)
+        }
+
+        clear()
     }
 
     fun updateItem(item: ShoppingListItem, f: ShoppingListItemUpdater.() -> Unit) {

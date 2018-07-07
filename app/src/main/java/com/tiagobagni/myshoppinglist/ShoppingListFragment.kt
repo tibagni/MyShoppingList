@@ -34,6 +34,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
     private val mainActivity by lazy { activity as MainActivity }
 
     private var snackbar: Snackbar? = null
+    private var menu: Menu? = null
 
     init {
         setHasOptionsMenu(true)
@@ -45,14 +46,28 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_shopping_list, null)
 
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        // This can run after the LiveData comes with the updated value
+        // So, to make sure we always initialize the menu correctly,
+        // read the listCompletedStatus here too so we don't override
+        // the correct state with the default state
+        menu?.findItem(R.id.action_archive)?.isVisible =
+                viewModel.listCompletedStatus.value ?: false
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_shopping_list, menu)
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_clear -> {
                 viewModel.clear()
+                true
+            }
+            R.id.action_archive -> {
+                viewModel.archiveList()
                 true
             }
             else -> false
@@ -76,6 +91,14 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
                 showTotalSpent(totalSpent)
             } else {
                 hideTotalSpent()
+            }
+        })
+
+        viewModel.listCompletedStatus.observe(this, Observer {
+            if (it == true) {
+                showArchiveOrClearOptions()
+            } else {
+                hideArchiveOrClearOptions()
             }
         })
 
@@ -148,6 +171,14 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
 
     private fun hideTotalSpent() {
         snackbar?.dismiss()
+    }
+
+    private fun showArchiveOrClearOptions() {
+        menu?.findItem(R.id.action_archive)?.isVisible = true
+    }
+
+    private fun hideArchiveOrClearOptions() {
+        menu?.findItem(R.id.action_archive)?.isVisible = false
     }
 
     override fun onInputDialogConfirmed(dialogId: Int, item: ShoppingListItem, input: String) {

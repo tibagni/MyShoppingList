@@ -26,4 +26,6 @@
     <string name="comment_title">Comentários</string>
     <string name="how_much_title">Quanto custou?</string>
     <string name="total_spent">Valor gasto: %1$s</string>
+    <string name="action_archive">Arquivar</string>
+    <string name="archived_lists_header">Listas arquivadas</string>
 </resources>
