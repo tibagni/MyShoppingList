@@ -12,7 +12,7 @@ interface ArchivedShoppingListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(items: List<ArchivedShoppingListItem>)
 
-    @Query("select distinct archiveTimestamp from archived_shopping_list_items")
+    @Query("select distinct archiveTimestamp from archived_shopping_list_items order by archiveTimestamp desc")
     fun getArchivedTimestamps(): LiveData<List<Long>>
 
     @Query("select * from archived_shopping_list_items where archiveTimestamp = :timestamp")
