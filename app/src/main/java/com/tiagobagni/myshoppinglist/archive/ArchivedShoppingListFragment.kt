@@ -4,11 +4,10 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tiagobagni.myshoppinglist.FabProvider
 import com.tiagobagni.myshoppinglist.R
+import com.tiagobagni.myshoppinglist.extensions.toCurrencyFormat
 import com.tiagobagni.myshoppinglist.extensions.toFormattedDate
 import kotlinx.android.synthetic.main.fragment_archived_shopping_list.*
 import org.koin.android.architecture.ext.viewModel
@@ -17,6 +16,10 @@ class ArchivedShoppingListFragment : Fragment() {
 
     companion object {
         const val ARG_TIMESTAMP = "timestamp"
+    }
+
+    init {
+        setHasOptionsMenu(true)
     }
 
     private val fabProvider by lazy { activity as FabProvider }
@@ -38,6 +41,8 @@ class ArchivedShoppingListFragment : Fragment() {
         activity?.title = timestamp.toFormattedDate()
         viewModel.getArchivedItemsFrom(timestamp).observe(this, Observer {
             archivedShoppingListAdapter.updateData(it ?: emptyList())
+            val total = it?.map { it.pricePaid }?.reduce { acc, d -> acc + d }
+            totalSpent.text = getString(R.string.total_spent, total?.toCurrencyFormat() ?: 0)
         })
     }
 
@@ -45,5 +50,19 @@ class ArchivedShoppingListFragment : Fragment() {
         archivedShoppingList.layoutManager = LinearLayoutManager(context)
         archivedShoppingList.emptyView = emptyView
         archivedShoppingList.adapter = archivedShoppingListAdapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_archived_shopping_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_delete -> {
+                viewModel.deleteItemsFrom(timestamp)
+                true
+            }
+            else -> false
+        }
     }
 }

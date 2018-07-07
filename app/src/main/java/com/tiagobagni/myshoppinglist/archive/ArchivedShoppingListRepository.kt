@@ -1,6 +1,7 @@
 package com.tiagobagni.myshoppinglist.archive
 
 import com.tiagobagni.myshoppinglist.MyShoppingListDatabase
+import org.jetbrains.anko.doAsync
 
 class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
     private val archivedShoppingListDao = database.archivedShoppingListDao()
@@ -9,4 +10,10 @@ class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
 
     fun getArchivedItemsFrom(timestamp: Long) =
         archivedShoppingListDao.getArchivedItemsFrom(timestamp)
+
+    fun deleteItemsFrom(timestamp: Long) {
+        doAsync {
+            archivedShoppingListDao.deleteItemsFrom(timestamp)
+        }
+    }
 }

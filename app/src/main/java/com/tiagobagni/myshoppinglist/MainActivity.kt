@@ -58,19 +58,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         supportFragmentManager.addOnBackStackChangedListener(this::fragmentBackStackChanged)
         navView.setNavigationItemSelectedListener(this)
-        navigateToFragment(R.id.nav_shopping_list)
+        navigateToStart()
 
         viewModel.archivedListsTimestamps.observe(this, Observer {
-            it?.let { updateArchivedLists(it) }
+            it?.let { onArchivedListsChanged(it) }
         })
     }
 
-    private fun updateArchivedLists(listTimestamps: List<Long>) {
+    private fun navigateToStart() {
+        navigateToFragment(R.id.nav_shopping_list)
+    }
+
+    private fun onArchivedListsChanged(listTimestamps: List<Long>) {
+        val newLists = listTimestamps.filterNot { archivedLists.containsKey(it) }
+        val removedLists = archivedLists.keys.filterNot { listTimestamps.contains(it) }
+
+        // If the removed list is also the currently selected item,
+        // just navigate back to the start
+        val currentItemRemoved = removedLists
+            .mapNotNull { archivedLists[it] }
+            .any { navView.menu.findItem(it)?.isChecked == true }
+        if (currentItemRemoved) {
+            navigateToStart()
+        }
+
+        updateArchivedLists(newLists, removedLists)
+    }
+
+    private fun updateArchivedLists(toAdd: List<Long>, toRemove: List<Long>) {
         val archivedListsMenu = navView.menu.findItem(R.id.history_menu_item).subMenu
-
-        val toAdd = listTimestamps.filterNot { archivedLists.containsKey(it) }
-        val toRemove = archivedLists.keys.filterNot { listTimestamps.contains(it) }
-
         toRemove.forEach {
             val itemId = archivedLists[it]
             itemId?.let { archivedListsMenu.removeItem(it) }

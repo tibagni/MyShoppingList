@@ -30,4 +30,5 @@
     <string name="total_spent">Total Spent: %1$s</string>
     <string name="action_archive">Archive</string>
     <string name="archived_lists_header">Archived lists</string>
+    <string name="delete">Delete</string>
 </resources>

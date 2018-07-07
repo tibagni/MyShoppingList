@@ -17,4 +17,7 @@ interface ArchivedShoppingListItemDao {
 
     @Query("select * from archived_shopping_list_items where archiveTimestamp = :timestamp")
     fun getArchivedItemsFrom(timestamp: Long): LiveData<List<ArchivedShoppingListItem>>
+
+    @Query("delete from archived_shopping_list_items where archiveTimestamp = :timestamp")
+    fun deleteItemsFrom(timestamp: Long)
 }
