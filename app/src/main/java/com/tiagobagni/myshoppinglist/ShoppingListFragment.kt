@@ -17,13 +17,17 @@ import org.koin.android.architecture.ext.viewModel
 import android.widget.TextView
 
 
-class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
+class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
+    ConfirmationDialogFragment.Callback {
 
     private companion object {
         const val ADD_STOCK_ITEM_REQUEST_CODE = 1
 
         private const val COMMENT_DIALOG = 0
         private const val PRICE_DIALOG = 1
+
+        private const val ARCHIVE_CONFIRM_DIALOG = 0
+        private const val CLEAR_CONFIRM_DIALOG = 1
     }
 
     private val shoppingListAdapter = ShoppingListAdapter(
@@ -63,15 +67,35 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_clear -> {
-                viewModel.clear()
+                showConfirmClearDialog()
                 true
             }
             R.id.action_archive -> {
-                viewModel.archiveList()
+                showConfirmArchiveDialog()
                 true
             }
             else -> false
         }
+    }
+
+    private fun showConfirmClearDialog() {
+        val dialog = ConfirmationDialogFragment.newInstance(
+            CLEAR_CONFIRM_DIALOG,
+            getString(R.string.delete_title),
+            getString(R.string.delete_list_msg)
+        )
+
+        dialog.show(childFragmentManager, "confirmClear")
+    }
+
+    private fun showConfirmArchiveDialog() {
+        val dialog = ConfirmationDialogFragment.newInstance(
+            ARCHIVE_CONFIRM_DIALOG,
+            getString(R.string.archive_title),
+            getString(R.string.archive_msg)
+        )
+
+        dialog.show(childFragmentManager, "confirmArchive")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -190,6 +214,13 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback {
                     setPricePaid(input.toDoubleOrZero())
                 }
             }
+        }
+    }
+
+    override fun onConfirmed(dialogId: Int) {
+        when (dialogId) {
+            CLEAR_CONFIRM_DIALOG -> viewModel.clear()
+            ARCHIVE_CONFIRM_DIALOG -> viewModel.archiveList()
         }
     }
 }

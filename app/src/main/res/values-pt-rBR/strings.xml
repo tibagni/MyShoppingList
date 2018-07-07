@@ -29,4 +29,10 @@
     <string name="action_archive">Arquivar</string>
     <string name="archived_lists_header">Listas arquivadas</string>
     <string name="delete">Apagar</string>
+    <string name="delete_title">Apagar?</string>
+    <string name="delete_archived_msg">Você tem certeza que deseja apagar esta lista arquivada?</string>
+    <string name="delete_list_msg">Você tem certeza que deseja apagar esta lista?</string>
+    <string name="archive_title">Arquivar?</string>
+    <string name="archive_msg">Você tem certeza que deseja arquivar essa lista? Todos os seus items irão ser movidos para uma lista arquivada</string>
+    <string name="delete_items_msg">Você tem certeza que deseja apagar os itens selecionados?</string>
 </resources>

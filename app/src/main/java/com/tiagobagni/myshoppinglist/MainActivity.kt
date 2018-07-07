@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun navigateToFragment(id: Int, args: Bundle? = null): Boolean {
         val fragmentInfo = fragmentsMap[id]
         fragmentInfo?.let {
-            val fragment = it.fragmentClass.newInstance()
+            val fragment = it.fragmentClass.newInstance() as Fragment
             showFragment(fragment, it.tag)
             args?.let { fragment.arguments = it }
             drawerLayout.closeDrawer(GravityCompat.START)

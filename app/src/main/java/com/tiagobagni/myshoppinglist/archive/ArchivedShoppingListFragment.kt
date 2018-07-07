@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import com.tiagobagni.myshoppinglist.ConfirmationDialogFragment
 import com.tiagobagni.myshoppinglist.FabProvider
 import com.tiagobagni.myshoppinglist.R
 import com.tiagobagni.myshoppinglist.extensions.toCurrencyFormat
@@ -12,8 +13,7 @@ import com.tiagobagni.myshoppinglist.extensions.toFormattedDate
 import kotlinx.android.synthetic.main.fragment_archived_shopping_list.*
 import org.koin.android.architecture.ext.viewModel
 
-class ArchivedShoppingListFragment : Fragment() {
-
+class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Callback {
     companion object {
         const val ARG_TIMESTAMP = "timestamp"
     }
@@ -59,10 +59,24 @@ class ArchivedShoppingListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_delete -> {
-                viewModel.deleteItemsFrom(timestamp)
+                showDeleteConfirmationDialog()
                 true
             }
             else -> false
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val dialog = ConfirmationDialogFragment.newInstance(
+            0,
+            getString(R.string.delete_title),
+            getString(R.string.delete_archived_msg)
+        )
+
+        dialog.show(childFragmentManager, "confirmDelete")
+    }
+
+    override fun onConfirmed(dialogId: Int) {
+        viewModel.deleteItemsFrom(timestamp)
     }
 }

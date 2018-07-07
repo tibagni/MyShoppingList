@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import com.tiagobagni.myshoppinglist.ConfirmationDialogFragment
 import com.tiagobagni.myshoppinglist.FabProvider
 import com.tiagobagni.myshoppinglist.MainActivity
 import com.tiagobagni.myshoppinglist.R
@@ -15,7 +16,8 @@ import kotlinx.android.synthetic.main.fragment_stock_items.*
 import org.koin.android.architecture.ext.viewModel
 
 class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
-    SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener, ConfirmationDialogFragment.Callback {
+
     private val viewModel by viewModel<StockItemsViewModel>()
 
     private val fabProvider by lazy { activity as FabProvider }
@@ -107,7 +109,7 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
                         return true
                     }
                     R.id.action_delete -> {
-                        onDeleteSelection()
+                        showDeleteConfirmation()
                         return true
                     }
                 }
@@ -146,9 +148,23 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
         addStockItemActivity?.finishWithResult(items.toTypedArray())
     }
 
+    private fun showDeleteConfirmation() {
+        val dialog = ConfirmationDialogFragment.newInstance(
+            0,
+            getString(R.string.delete_title),
+            getString(R.string.delete_items_msg)
+        )
+
+        dialog.show(childFragmentManager, "confirmDelete")
+    }
+
     private fun onDeleteSelection() {
         val items = shoppingItemsAdapter.getItems(selectionModeHelper.selectedItems)
         viewModel.deleteStockItems(items)
         actionMode?.finish()
+    }
+
+    override fun onConfirmed(dialogId: Int) {
+        onDeleteSelection()
     }
 }

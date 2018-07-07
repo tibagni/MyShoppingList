@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import kotlinx.android.synthetic.main.input_dialog.view.*
+import org.jetbrains.anko.bundleOf
 
 
 class InputDialogFragment : DialogFragment() {
@@ -33,14 +34,13 @@ class InputDialogFragment : DialogFragment() {
             inputType: Int = EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS
         ): InputDialogFragment {
             val dialog = InputDialogFragment()
-            val args = Bundle()
-            args.putInt(ID_ARG, dialogId)
-            args.putParcelable(ITEM_ARG, item)
-            args.putString(TITLE_ARG, title)
-            args.putString(DESCRIPTION_ARG, description)
-            args.putString(DEFAULT_INPUT_ARG, defaultInput)
-            args.putInt(INPUT_TYPE_ARG, inputType)
-            dialog.arguments = args
+            dialog.arguments = bundleOf(
+                ID_ARG to dialogId,
+                ITEM_ARG to item,
+                TITLE_ARG to title,
+                DESCRIPTION_ARG to description,
+                DEFAULT_INPUT_ARG to defaultInput,
+                INPUT_TYPE_ARG to inputType)
 
             return dialog
         }

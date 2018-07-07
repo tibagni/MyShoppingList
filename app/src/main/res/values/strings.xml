@@ -31,4 +31,10 @@
     <string name="action_archive">Archive</string>
     <string name="archived_lists_header">Archived lists</string>
     <string name="delete">Delete</string>
+    <string name="delete_title">Delete?</string>
+    <string name="delete_archived_msg">Are you sure you want to delete this archived list?</string>
+    <string name="delete_list_msg">Are you sure you want to delete this list?</string>
+    <string name="archive_title">Archive?</string>
+    <string name="archive_msg">Are you sure you want to archive the list? This will move all your current items to an archived list</string>
+    <string name="delete_items_msg">Are you sure you want to delete these items?</string>
 </resources>
