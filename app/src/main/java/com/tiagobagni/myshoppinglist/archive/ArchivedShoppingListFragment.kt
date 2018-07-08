@@ -41,8 +41,10 @@ class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Call
         activity?.title = timestamp.toFormattedDate()
         viewModel.getArchivedItemsFrom(timestamp).observe(this, Observer {
             archivedShoppingListAdapter.updateData(it ?: emptyList())
-            val total = it?.map { it.pricePaid }?.reduce { acc, d -> acc + d }
-            totalSpent.text = getString(R.string.total_spent, total?.toCurrencyFormat() ?: 0)
+            if (it?.isNotEmpty() == true) {
+                val total = it?.map { it.pricePaid }?.reduce { acc, d -> acc + d }
+                totalSpent.text = getString(R.string.total_spent, total?.toCurrencyFormat() ?: 0)
+            }
         })
     }
 
