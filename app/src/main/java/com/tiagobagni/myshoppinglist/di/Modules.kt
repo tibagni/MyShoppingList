@@ -7,6 +7,7 @@ import com.tiagobagni.myshoppinglist.ShoppingListRepository
 import com.tiagobagni.myshoppinglist.ShoppingListViewModel
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListViewModel
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListRepository
+import com.tiagobagni.myshoppinglist.stock.StockItemsDetailsViewModel
 import com.tiagobagni.myshoppinglist.stock.StockItemsViewModel
 import com.tiagobagni.myshoppinglist.stock.StockRepository
 import org.koin.android.architecture.ext.viewModel
@@ -29,6 +30,7 @@ val appModule = applicationContext {
     viewModel { StockItemsViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { ArchivedShoppingListViewModel(get()) }
+    viewModel { StockItemsDetailsViewModel(get()) }
 }
 
 val modules = listOf(appModule)

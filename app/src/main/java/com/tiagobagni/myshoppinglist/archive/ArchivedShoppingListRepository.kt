@@ -11,6 +11,9 @@ class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
     fun getArchivedItemsFrom(timestamp: Long) =
         archivedShoppingListDao.getArchivedItemsFrom(timestamp)
 
+    fun getArchivedItemsOf(stockItemId: Int) =
+        archivedShoppingListDao.getArchivedItemsOf(stockItemId)
+
     fun deleteItemsFrom(timestamp: Long) {
         doAsync {
             archivedShoppingListDao.deleteItemsFrom(timestamp)

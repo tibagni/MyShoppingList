@@ -35,4 +35,8 @@
     <string name="archive_title">Arquivar?</string>
     <string name="archive_msg">Você tem certeza que deseja arquivar essa lista? Todos os seus items irão ser movidos para uma lista arquivada</string>
     <string name="delete_items_msg">Você tem certeza que deseja apagar os itens selecionados?</string>
+    <string name="avg_price">Preço médio:</string>
+    <string name="cheapest">Mais barato</string>
+    <string name="most_expensive">Mais caro</string>
+    <string name="history_header">Histórico</string>
 </resources>

@@ -37,4 +37,8 @@
     <string name="archive_title">Archive?</string>
     <string name="archive_msg">Are you sure you want to archive the list? This will move all your current items to an archived list</string>
     <string name="delete_items_msg">Are you sure you want to delete these items?</string>
+    <string name="avg_price">Average price:</string>
+    <string name="cheapest">Cheapest</string>
+    <string name="most_expensive">Most expensive</string>
+    <string name="history_header">History</string>
 </resources>

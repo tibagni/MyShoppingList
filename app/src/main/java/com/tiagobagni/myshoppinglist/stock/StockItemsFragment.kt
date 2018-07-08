@@ -93,7 +93,16 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
     }
 
     private fun onStockItemClicked(item: StockItem) {
-        addStockItemActivity?.finishWithResult(item)
+        if (addStockItemActivity != null) {
+            addStockItemActivity?.finishWithResult(item)
+        } else {
+            showItemDetails(item)
+        }
+    }
+
+    private fun showItemDetails(item: StockItem) {
+        val dialog = StockItemDetailsDialog.newInstance(item.id!!, item.name)
+        dialog.show(childFragmentManager, "itemDetails")
     }
 
     override fun onNewStockItemCreated(newItem: StockItem) {
