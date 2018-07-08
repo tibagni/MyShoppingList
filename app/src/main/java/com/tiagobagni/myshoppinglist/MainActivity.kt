@@ -58,7 +58,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         supportFragmentManager.addOnBackStackChangedListener(this::fragmentBackStackChanged)
         navView.setNavigationItemSelectedListener(this)
-        navigateToStart()
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            // Only navigate to start if this is the first launch, and not on screen rotation
+            // If back stack is empty, this is the first launch
+            navigateToStart()
+        }
 
         viewModel.archivedListsTimestamps.observe(this, Observer {
             it?.let { onArchivedListsChanged(it) }
