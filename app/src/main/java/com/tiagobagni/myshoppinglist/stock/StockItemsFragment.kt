@@ -28,6 +28,7 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
     private val selectionModeHelper = SelectionModeHelper(object : ChoiceModeHelperCallback {
         override fun onSelectionChanged() {
             updateSelectionCount()
+            updateMenu()
         }
 
         override fun onEnterSelectionMode() {
@@ -121,6 +122,10 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
                         showDeleteConfirmation()
                         return true
                     }
+                    R.id.action_select_all -> {
+                        shoppingItemsAdapter.selectAll()
+                        return true
+                    }
                 }
                 return false
             }
@@ -149,6 +154,11 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
 
     private fun updateSelectionCount() {
         actionMode?.title = selectionModeHelper.selectedCount.toString()
+    }
+
+    private fun updateMenu() {
+        val canSelectAll = selectionModeHelper.selectedCount != shoppingItemsAdapter.itemCount
+        actionMode?.menu?.findItem(R.id.action_select_all)?.isVisible = canSelectAll
     }
 
     private fun onConfirmSelection() {

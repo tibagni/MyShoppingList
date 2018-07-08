@@ -69,6 +69,14 @@ class SelectionModeHelper(private val callback: ChoiceModeHelperCallback) {
         val array = bundle.getIntArray(STATE_ITEMS)
         array?.forEach { selectedItems.add(it) }
     }
+
+    fun markAsSelected(allItems: List<Int>) {
+        val wasEmpty = selectedItems.isEmpty()
+        selectedItems += allItems
+
+        if (wasEmpty) enterSelectionMode()
+        callback.onSelectionChanged()
+    }
 }
 
 interface ChoiceModeHelperCallback {

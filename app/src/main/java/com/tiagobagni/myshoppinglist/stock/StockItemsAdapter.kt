@@ -69,4 +69,11 @@ class StockItemsAdapter(
     fun getItems(itemIndices: Collection<Int>): List<StockItem> {
         return list.filterIndexed { index, _ -> itemIndices.contains(index) }
     }
+
+    fun selectAll() {
+        selectionModeHelper.markAsSelected(list.mapIndexed { index, _ -> index })
+        // Here we need to update the state of all views, so, it is fine to call
+        // notifyDataSetChanged
+        notifyDataSetChanged()
+    }
 }
