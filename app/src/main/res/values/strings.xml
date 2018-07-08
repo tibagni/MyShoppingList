@@ -27,6 +27,7 @@
     <string name="shopping_list_item_comment_description">Write any comment or observation about this item...</string>
     <string name="comment_title">Comment about this item</string>
     <string name="how_much_title">How much was it?</string>
+    <string name="how_much_description">Enter the price paid for this product to keep track of the spendings</string>
     <string name="total_spent">Total Spent: %1$s</string>
     <string name="action_archive">Archive</string>
     <string name="archived_lists_header">Archived lists</string>

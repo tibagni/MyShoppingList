@@ -24,6 +24,7 @@ class InputDialogFragment : DialogFragment() {
         private const val DESCRIPTION_ARG = "description"
         private const val DEFAULT_INPUT_ARG = "default_input"
         private const val INPUT_TYPE_ARG = "input_type"
+        private const val ICON_ARG = "icon"
 
         fun newInstance(
             dialogId: Int = 0,
@@ -31,7 +32,8 @@ class InputDialogFragment : DialogFragment() {
             title: String = "",
             description: String = "",
             defaultInput: String = "",
-            inputType: Int = EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS
+            inputType: Int = EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS,
+            iconRes: Int = -1
         ): InputDialogFragment {
             val dialog = InputDialogFragment()
             dialog.arguments = bundleOf(
@@ -40,7 +42,8 @@ class InputDialogFragment : DialogFragment() {
                 TITLE_ARG to title,
                 DESCRIPTION_ARG to description,
                 DEFAULT_INPUT_ARG to defaultInput,
-                INPUT_TYPE_ARG to inputType)
+                INPUT_TYPE_ARG to inputType,
+                ICON_ARG to iconRes)
 
             return dialog
         }
@@ -56,8 +59,10 @@ class InputDialogFragment : DialogFragment() {
                 ?: throw IllegalArgumentException("No item provided!")
 
         val defInput = args.getString(DEFAULT_INPUT_ARG)
-        val title = args.getString(TITLE_ARG)
+        val dialogTitle = args.getString(TITLE_ARG)
+        val iconRes = args.getInt(ICON_ARG)
         with(view) {
+            title.text = dialogTitle
             inputText.setText(defInput, TextView.BufferType.EDITABLE)
             inputText.inputType = args.getInt(INPUT_TYPE_ARG)
             val description = args.getString(DESCRIPTION_ARG, "")
@@ -66,10 +71,14 @@ class InputDialogFragment : DialogFragment() {
             } else {
                 inputDescription.text = description
             }
+
+            if (iconRes != -1) {
+                icon.setImageResource(iconRes)
+                icon.visibility = View.VISIBLE
+            }
         }
 
         val dialog = AlertDialog.Builder(context!!)
-            .setTitle(title)
             .setView(view)
             .setPositiveButton(android.R.string.ok, { _, _ ->
                 dismiss()

@@ -167,7 +167,9 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
                 dialogId = PRICE_DIALOG,
                 item = item,
                 title = getString(R.string.how_much_title),
-                inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
+                description = getString(R.string.how_much_description),
+                inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL,
+                iconRes = R.drawable.ic_money
             )
             priceDialog.show(childFragmentManager, "price")
         }
