@@ -53,10 +53,10 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
     override fun onPrepareOptionsMenu(menu: Menu?) {
         // This can run after the LiveData comes with the updated value
         // So, to make sure we always initialize the menu correctly,
-        // read the listCompletedStatus here too so we don't override
+        // read the showArchiveOption here too so we don't override
         // the correct state with the default state
         menu?.findItem(R.id.action_archive)?.isVisible =
-                viewModel.listCompletedStatus.value ?: false
+                viewModel.showArchiveOption.value ?: false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -118,11 +118,11 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
             }
         })
 
-        viewModel.listCompletedStatus.observe(this, Observer {
+        viewModel.showArchiveOption.observe(this, Observer {
             if (it == true) {
-                showArchiveOrClearOptions()
+                showArchiveOption()
             } else {
-                hideArchiveOrClearOptions()
+                hideArchiveOption()
             }
         })
 
@@ -199,11 +199,11 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         snackbar?.dismiss()
     }
 
-    private fun showArchiveOrClearOptions() {
+    private fun showArchiveOption() {
         menu?.findItem(R.id.action_archive)?.isVisible = true
     }
 
-    private fun hideArchiveOrClearOptions() {
+    private fun hideArchiveOption() {
         menu?.findItem(R.id.action_archive)?.isVisible = false
     }
 

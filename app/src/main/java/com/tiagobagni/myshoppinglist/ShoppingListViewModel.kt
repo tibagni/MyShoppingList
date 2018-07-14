@@ -1,16 +1,39 @@
 package com.tiagobagni.myshoppinglist
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
+import com.tiagobagni.myshoppinglist.archive.ArchivedListsManager
+import com.tiagobagni.myshoppinglist.settings.SettingsRepository
 
-class ShoppingListViewModel(private val repository: ShoppingListRepository) : ViewModel() {
+class ShoppingListViewModel(
+    private val repository: ShoppingListRepository,
+    private val settingsRepository: SettingsRepository,
+    private val archivedListsManager: ArchivedListsManager
+) : ViewModel() {
+    private val maxArchivedLists = settingsRepository.getMaxArchivedList()
+    private val showArchiveOptionMediator = MediatorLiveData<Boolean>()
 
     val shoppingList = repository.getShoppingList()
     val checkedItems = repository.getCheckedItems()
+    val showArchiveOption = showArchiveOptionMediator as LiveData<Boolean>
 
-    val listCompletedStatus: LiveData<Boolean> = Transformations.map(shoppingList) {
-        it.isNotEmpty() && it.map { it.checked }.reduce { acc, b -> acc && b }
+    init {
+        showArchiveOptionMediator.addSource(shoppingList) {
+            showArchiveOptionMediator.postValue(shouldShowArchiveOption(it))
+        }
+
+        showArchiveOptionMediator.addSource(maxArchivedLists) {
+            showArchiveOptionMediator.postValue(shouldShowArchiveOption(shoppingList.value))
+        }
+    }
+
+    private fun shouldShowArchiveOption(shoppingList: List<ShoppingListItem>?): Boolean {
+        val isArchiveEnabled = settingsRepository.getMaxArchivedListsSync() > 0
+        val isListCompleted = shoppingList != null && shoppingList.isNotEmpty()
+                && shoppingList.map { it.checked }.reduce { acc, b -> acc && b }
+
+        return isArchiveEnabled && isListCompleted
     }
 
     fun addItems(newItems: List<ShoppingListItem>) {
@@ -20,7 +43,7 @@ class ShoppingListViewModel(private val repository: ShoppingListRepository) : Vi
     fun archiveList() {
         val allItems = shoppingList.value
         allItems?.let {
-            repository.archive(it)
+            archivedListsManager.archive(it)
         }
 
         clear()

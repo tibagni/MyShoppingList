@@ -41,4 +41,8 @@
     <string name="most_expensive">Mais caro</string>
     <string name="history_header">Histórico</string>
     <string name="action_select_all">Select All</string>
+    <string name="settings">Configurações</string>
+    <string name="max_archived_lists_summary">Older archived lists exceeding this maximum are automatically removed. Atual: %1$s</string>
+    <string name="max_archived_lists_title">Max. Archived Lists</string>
+    <string name="do_not_archive_option">0 - Não arquivar</string>
 </resources>

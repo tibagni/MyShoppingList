@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/max_archived_lists_title"
+        android:key="@string/sp_max_archived_lists"
+        android:entries="@array/max_archived_lists"
+        android:defaultValue="5"
+        android:entryValues="@array/max_archived_lists_values"
+        android:summary="@string/max_archived_lists_summary" />
+</PreferenceScreen>

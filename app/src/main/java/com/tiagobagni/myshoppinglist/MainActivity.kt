@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListFragment
 import com.tiagobagni.myshoppinglist.extensions.toFormattedDate
+import com.tiagobagni.myshoppinglist.settings.SettingsFragment
 import com.tiagobagni.myshoppinglist.stock.StockItemsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         R.id.nav_stock_items to FragmentInfo(
             StockItemsFragment::class.java,
             "stockItems"
+        ),
+        R.id.nav_settings to FragmentInfo(
+            SettingsFragment::class.java,
+            "settings"
         )
     )
 

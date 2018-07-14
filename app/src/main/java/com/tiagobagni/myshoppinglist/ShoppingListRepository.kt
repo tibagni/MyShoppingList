@@ -5,7 +5,6 @@ import org.jetbrains.anko.doAsync
 
 class ShoppingListRepository(database: MyShoppingListDatabase) {
     private val shoppingListDao = database.shoppingListDao()
-    private val archivedShoppingListDao = database.archivedShoppingListDao()
 
     fun getShoppingList() = shoppingListDao.getAllOrdered()
 
@@ -26,21 +25,6 @@ class ShoppingListRepository(database: MyShoppingListDatabase) {
     fun updateItem(item: ShoppingListItem) {
         doAsync {
             shoppingListDao.updateItem(item)
-        }
-    }
-
-    fun archive(items: List<ShoppingListItem>) {
-        doAsync {
-            archivedShoppingListDao.insert(items.map {
-                ArchivedShoppingListItem(
-                    it.stockItemId,
-                    it.name,
-                    it.icon,
-                    it.comment,
-                    it.pricePaid,
-                    System.currentTimeMillis()
-                )
-            })
         }
     }
 }
