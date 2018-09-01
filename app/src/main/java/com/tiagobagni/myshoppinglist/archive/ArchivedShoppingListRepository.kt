@@ -24,6 +24,7 @@ class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
 
     fun addItems(items: List<ShoppingListItem>) {
         doAsync {
+            val timestamp = System.currentTimeMillis()
             archivedShoppingListDao.insert(items.map {
                 ArchivedShoppingListItem(
                     it.stockItemId,
@@ -31,7 +32,7 @@ class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
                     it.icon,
                     it.comment,
                     it.pricePaid,
-                    System.currentTimeMillis()
+                    timestamp
                 )
             })
         }
