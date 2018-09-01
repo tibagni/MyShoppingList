@@ -7,6 +7,7 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import com.tiagobagni.myshoppinglist.FabProvider
 import com.tiagobagni.myshoppinglist.R
+import com.tiagobagni.myshoppinglist.analytics.EventLogger
 import org.koin.android.architecture.ext.viewModel
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
@@ -37,6 +38,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (preference) {
             archivedListsHistorySizePref -> {
+                EventLogger.logChangedMaxArchivedLists(newValue as String)
                 archivedListsHistorySizePref.summary =
                         getString(R.string.max_archived_lists_summary, newValue)
 

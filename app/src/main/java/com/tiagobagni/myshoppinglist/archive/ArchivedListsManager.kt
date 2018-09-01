@@ -1,6 +1,7 @@
 package com.tiagobagni.myshoppinglist.archive
 
 import com.tiagobagni.myshoppinglist.ShoppingListItem
+import com.tiagobagni.myshoppinglist.analytics.EventLogger
 import com.tiagobagni.myshoppinglist.settings.SettingsRepository
 import org.jetbrains.anko.doAsync
 
@@ -9,6 +10,7 @@ class ArchivedListsManager(
     private val settingsRepository: SettingsRepository
 ) {
     fun archive(items: List<ShoppingListItem>) {
+        EventLogger.logArchiveList()
         archivedListsRepository.addItems(items)
 
         // Make sure we don't exceed the max allowed number of archived lists
