@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="max_archived_lists">
+    <string-array name="max_archived_lists" translatable="false">
         <item>@string/do_not_archive_option</item>
         <item>5</item>
         <item>10</item>
@@ -8,7 +8,7 @@
         <item>30</item>
     </string-array>
 
-    <string-array name="max_archived_lists_values">
+    <string-array name="max_archived_lists_values" translatable="false">
         <item>0</item>
         <item>5</item>
         <item>10</item>
