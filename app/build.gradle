@@ -13,6 +13,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        buildConfigField "String", "APP_CENTER_SECRET", getBuildProperty("appCenterSecret")
+
         kapt {
             arguments {
                 arg("room.schemaLocation", "$projectDir/schemas".toString())
@@ -52,6 +54,9 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$roomVersion"
     implementation "org.koin:koin-android-architecture:$koinVersion"
     implementation "org.koin:koin-android:$koinVersion"
+
+    implementation "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion"
+    implementation "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

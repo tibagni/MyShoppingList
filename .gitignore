@@ -1,3 +1,6 @@
+# Build properties with API keys
+build_properties
+
 # Built application files
 *.apk
 *.ap_
