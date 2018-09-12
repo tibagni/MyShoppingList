@@ -9,13 +9,14 @@ import com.tiagobagni.myshoppinglist.settings.SettingsRepository
 class ShoppingListViewModel(
     private val repository: ShoppingListRepository,
     private val settingsRepository: SettingsRepository,
-    private val archivedListsManager: ArchivedListsManager
+    private val archivedListsManager: ArchivedListsManager,
+    private val listName: String
 ) : ViewModel() {
     private val maxArchivedLists = settingsRepository.getMaxArchivedList()
     private val showArchiveOptionMediator = MediatorLiveData<Boolean>()
 
-    val shoppingList = repository.getShoppingList()
-    val checkedItems = repository.getCheckedItems()
+    val shoppingList = repository.getAllItems(listName)
+    val checkedItems = repository.getCheckedItems(listName)
     val showArchiveOption = showArchiveOptionMediator as LiveData<Boolean>
 
     init {
@@ -37,7 +38,7 @@ class ShoppingListViewModel(
     }
 
     fun addItems(newItems: List<ShoppingListItem>) {
-        repository.addShoppingListItems(newItems)
+        repository.addItems(newItems)
     }
 
     fun archiveList() {
@@ -56,7 +57,7 @@ class ShoppingListViewModel(
     }
 
     fun clear() {
-        repository.deleteAll()
+        repository.deleteShoppingList(ShoppingList(listName))
     }
 
     class ShoppingListItemUpdater(originalItem: ShoppingListItem) {

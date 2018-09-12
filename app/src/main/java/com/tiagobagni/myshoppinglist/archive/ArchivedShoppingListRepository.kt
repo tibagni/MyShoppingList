@@ -7,8 +7,8 @@ import org.jetbrains.anko.doAsync
 class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
     private val archivedShoppingListDao = database.archivedShoppingListDao()
 
-    fun getArchivedTimestamps() = archivedShoppingListDao.getArchivedTimestamps()
-    fun getArchivedTimestampsSync() = archivedShoppingListDao.getArchivedTimestampsSync()
+    fun getArchivedLists() = archivedShoppingListDao.getArchivedLists()
+    fun getArchivedListsSync() = archivedShoppingListDao.getArchivedListsSync()
 
     fun getArchivedItemsFrom(timestamp: Long) =
         archivedShoppingListDao.getArchivedItemsFrom(timestamp)
@@ -27,6 +27,7 @@ class ArchivedShoppingListRepository(database: MyShoppingListDatabase) {
             val timestamp = System.currentTimeMillis()
             archivedShoppingListDao.insert(items.map {
                 ArchivedShoppingListItem(
+                    it.listName,
                     it.stockItemId,
                     it.name,
                     it.icon,

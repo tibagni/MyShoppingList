@@ -6,24 +6,12 @@ import android.arch.persistence.room.*
 @Dao
 interface ShoppingListDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(items: List<ShoppingListItem>)
+    @Insert(onConflict = OnConflictStrategy.FAIL)
+    fun insert(shoppingList: ShoppingList): Long
 
-    @Query("select * from shopping_list_items")
-    fun getAll(): LiveData<List<ShoppingListItem>>
+    @Query("select * from active_shopping_list order by listName")
+    fun getAllListsOrdered(): LiveData<List<ShoppingList>>
 
-    @Query("select * from shopping_list_items order by name")
-    fun getAllOrdered(): LiveData<List<ShoppingListItem>>
-
-    @Query("select * from shopping_list_items where checked = 1")
-    fun getChecked(): LiveData<List<ShoppingListItem>>
-
-    @Query("select * from shopping_list_items where checked = 0")
-    fun getUnChecked(): LiveData<List<ShoppingListItem>>
-
-    @Update
-    fun updateItem(item: ShoppingListItem)
-
-    @Query("delete from shopping_list_items")
-    fun deleteAll()
+    @Delete
+    fun delete(list: ShoppingList)
 }

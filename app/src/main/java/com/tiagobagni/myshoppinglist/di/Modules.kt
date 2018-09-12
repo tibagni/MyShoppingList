@@ -2,10 +2,7 @@ package com.tiagobagni.myshoppinglist.di
 
 import android.arch.persistence.room.Room
 import android.support.v7.preference.PreferenceManager
-import com.tiagobagni.myshoppinglist.MainViewModel
-import com.tiagobagni.myshoppinglist.MyShoppingListDatabase
-import com.tiagobagni.myshoppinglist.ShoppingListRepository
-import com.tiagobagni.myshoppinglist.ShoppingListViewModel
+import com.tiagobagni.myshoppinglist.*
 import com.tiagobagni.myshoppinglist.archive.ArchivedListsManager
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListViewModel
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListRepository
@@ -39,11 +36,12 @@ val appModule = applicationContext {
     bean { SettingsKeys(androidApplication()) }
     bean { ArchivedListsManager(get(), get()) }
 
-    viewModel { ShoppingListViewModel(get(), get(), get()) }
+    viewModel { params -> ShoppingListViewModel(get(), get(), get(), params["listName"]) }
     viewModel { StockItemsViewModel(get()) }
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
     viewModel { ArchivedShoppingListViewModel(get()) }
     viewModel { StockItemsDetailsViewModel(get()) }
+    viewModel { NewShoppingListViewModel(get()) }
 }
 
 val modules = listOf(appModule)

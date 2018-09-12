@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Minha Lista de Compras</string>
     <string name="title_shopping_list">Lista de compras</string>
+    <string name="title_create_shopping_list">Nova Lista de compras</string>
     <string name="title_stock_items">Estoque</string>
     <string name="action_settings">Configurações</string>
     <string name="action_confirm">Confirmar</string>
@@ -28,6 +29,7 @@
     <string name="how_much_description">Insira o valor pago pelo produto para calcular os gastos da compra</string>
     <string name="total_spent">Valor gasto: %1$s</string>
     <string name="action_archive">Arquivar</string>
+    <string name="active_lists_header">Listas ativas</string>
     <string name="archived_lists_header">Listas arquivadas</string>
     <string name="delete">Apagar</string>
     <string name="delete_title">Apagar?</string>
@@ -45,4 +47,8 @@
     <string name="max_archived_lists_summary">Older archived lists exceeding this maximum are automatically removed. Atual: %1$s</string>
     <string name="max_archived_lists_title">Max. Archived Lists</string>
     <string name="do_not_archive_option">0 - Não arquivar</string>
+    <string name="new_shopping_list_title">Nova Lista de Compras</string>
+    <string name="new_shopping_list_sub_title">Dê um nome para sua nova lista de compras</string>
+    <string name="create_btn">Criar!</string>
+    <string name="status_list_already_exists">This list name already exists</string>
 </resources>

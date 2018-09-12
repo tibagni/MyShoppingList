@@ -20,7 +20,8 @@ class ArchivedListsManager(
     fun removeOlderArchivedLists() {
         doAsync {
             val maxArchivedLists = settingsRepository.getMaxArchivedListsSync()
-            val allArchivedTimestamps = archivedListsRepository.getArchivedTimestampsSync()
+            val allArchivedTimestamps = archivedListsRepository.getArchivedListsSync()
+                .mapNotNull { it.archiveTimestamp }
 
             allArchivedTimestamps?.let {
                 if (it.size > maxArchivedLists) {

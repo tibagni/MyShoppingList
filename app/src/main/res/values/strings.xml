@@ -3,6 +3,7 @@
 
     <string name="app_name">My Shopping List</string>
     <string name="title_shopping_list">Shopping List</string>
+    <string name="title_create_shopping_list">New Shopping List</string>
     <string name="title_stock_items">Stock</string>
     <string name="action_settings">Settings</string>
     <string name="action_confirm">Confirm</string>
@@ -30,6 +31,7 @@
     <string name="how_much_description">Enter the price paid for this product to keep track of the spendings</string>
     <string name="total_spent">Total Spent: %1$s</string>
     <string name="action_archive">Archive</string>
+    <string name="active_lists_header">Active lists</string>
     <string name="archived_lists_header">Archived lists</string>
     <string name="delete">Delete</string>
     <string name="delete_title">Delete?</string>
@@ -49,4 +51,10 @@
     <string name="do_not_archive_option">0 - Do not archive</string>
 
     <string name="sp_max_archived_lists" translatable="false">keep_archived_lists</string>
+
+    <string name="archived_list_title" translatable="false">%1$s (%2$s)</string>
+    <string name="new_shopping_list_title">New Shopping List</string>
+    <string name="new_shopping_list_sub_title">Give your new shopping list a name</string>
+    <string name="create_btn">Create!</string>
+    <string name="status_list_already_exists">This list name already exists</string>
 </resources>

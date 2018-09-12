@@ -20,6 +20,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         fabProvider.hideFab()
+        activity?.title = getString(R.string.settings)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

@@ -12,6 +12,7 @@ import com.tiagobagni.myshoppinglist.stock.StockItem
 @Database(
     entities = [
         StockItem::class,
+        ShoppingList::class,
         ShoppingListItem::class,
         ArchivedShoppingListItem::class
     ], version = 1
@@ -20,5 +21,6 @@ import com.tiagobagni.myshoppinglist.stock.StockItem
 abstract class MyShoppingListDatabase : RoomDatabase() {
     abstract fun stockDao(): StockDao
     abstract fun shoppingListDao(): ShoppingListDao
+    abstract fun shoppingListItemDao(): ShoppingListItemDao
     abstract fun archivedShoppingListDao(): ArchivedShoppingListItemDao
 }

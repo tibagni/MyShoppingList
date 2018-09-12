@@ -3,12 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <item android:title="@string/active_lists_header"
+        android:id="@+id/active_lists_menu_item">
+        <menu>
+            <group android:id="@+id/active_group"
+                android:checkableBehavior="single"/>
+        </menu>
+    </item>
+
     <group android:id="@+id/main_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_shopping_list"
-            android:icon="@drawable/ic_menu_shopping_list"
-            android:title="@string/title_shopping_list" />
+            android:id="@+id/nav_create_shopping_list"
+            android:icon="@drawable/ic_add2"
+            android:title="@string/title_create_shopping_list" />
         <item
             android:id="@+id/nav_stock_items"
             android:icon="@drawable/ic_menu_stock"

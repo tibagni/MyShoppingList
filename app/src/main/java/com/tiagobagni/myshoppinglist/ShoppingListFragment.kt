@@ -20,8 +20,10 @@ import android.widget.TextView
 class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
     ConfirmationDialogFragment.Callback {
 
-    private companion object {
-        const val ADD_STOCK_ITEM_REQUEST_CODE = 1
+    companion object {
+        const val ARG_LIST_NAME = "list_name"
+
+        private const val ADD_STOCK_ITEM_REQUEST_CODE = 1
 
         private const val COMMENT_DIALOG = 0
         private const val PRICE_DIALOG = 1
@@ -34,8 +36,11 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         this::onItemClicked,
         this::onItemLongClicked
     )
-    private val viewModel by viewModel<ShoppingListViewModel>()
+    private val viewModel by viewModel<ShoppingListViewModel>(
+        parameters = { mapOf("listName" to listName) }
+    )
     private val mainActivity by lazy { activity as MainActivity }
+    private val listName by lazy { arguments?.get(ARG_LIST_NAME) as String }
 
     private var snackbar: Snackbar? = null
     private var menu: Menu? = null
@@ -133,7 +138,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         mainActivity.configureFab(R.drawable.ic_add_shopping_cart) {
             startActivityForResult<AddStockItemActivity>(ADD_STOCK_ITEM_REQUEST_CODE)
         }
-        mainActivity.title = getString(R.string.title_shopping_list)
+        mainActivity.title = listName
     }
 
     override fun onDestroyView() {
@@ -147,7 +152,8 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         when (requestCode) {
             ADD_STOCK_ITEM_REQUEST_CODE -> {
                 val items = extractStockItemsList(data)
-                val shoppingListItems = items.map { ShoppingListItem(it.id!!, it.name, it.icon) }
+                val shoppingListItems =
+                    items.map { ShoppingListItem(listName, it.id!!, it.name, it.icon) }
                 viewModel.addItems(shoppingListItems)
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

@@ -1,30 +1,40 @@
 package com.tiagobagni.myshoppinglist
 
-import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListItem
 import org.jetbrains.anko.doAsync
 
 class ShoppingListRepository(database: MyShoppingListDatabase) {
+    private val shoppingListItemDao = database.shoppingListItemDao()
     private val shoppingListDao = database.shoppingListDao()
 
-    fun getShoppingList() = shoppingListDao.getAllOrdered()
+    fun createNewShoppingListSync(shoppingList: ShoppingList) = shoppingListDao.insert(shoppingList)
 
-    fun getCheckedItems() = shoppingListDao.getChecked()
-
-    fun addShoppingListItems(items: List<ShoppingListItem>) {
+    fun createNewShoppingList(shoppingList: ShoppingList) {
         doAsync {
-            shoppingListDao.insert(items)
+            shoppingListDao.insert(shoppingList)
         }
     }
 
-    fun deleteAll() {
+    fun deleteShoppingList(shoppingList: ShoppingList) {
         doAsync {
-            shoppingListDao.deleteAll()
+            shoppingListDao.delete(shoppingList)
+        }
+    }
+
+    fun getAllShoppingLists() = shoppingListDao.getAllListsOrdered()
+
+    fun getAllItems(listName: String) = shoppingListItemDao.getAllItemsOrdered(listName)
+
+    fun getCheckedItems(listName: String) = shoppingListItemDao.getCheckedItems(listName)
+
+    fun addItems(items: List<ShoppingListItem>) {
+        doAsync {
+            shoppingListItemDao.insertItem(items)
         }
     }
 
     fun updateItem(item: ShoppingListItem) {
         doAsync {
-            shoppingListDao.updateItem(item)
+            shoppingListItemDao.updateItem(item)
         }
     }
 }

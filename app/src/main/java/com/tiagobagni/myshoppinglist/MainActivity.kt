@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.tiagobagni.myshoppinglist.archive.ArchivedListInfo
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListFragment
 import com.tiagobagni.myshoppinglist.extensions.toFormattedDate
 import com.tiagobagni.myshoppinglist.settings.SettingsFragment
@@ -23,12 +24,16 @@ private data class FragmentInfo<T>(val fragmentClass: Class<T>, val tag: String)
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     FabProvider {
 
+    private companion object {
+        private const val INITIAL_NAVIGATION_KEY = "initialNavigation"
+    }
+
     private val viewModel by viewModel<MainViewModel>()
 
     private val fragmentsMap = mutableMapOf(
-        R.id.nav_shopping_list to FragmentInfo(
-            ShoppingListFragment::class.java,
-            "shoppingList"
+        R.id.nav_create_shopping_list to FragmentInfo(
+            NewShoppingListFragment::class.java,
+            "newShoppingList"
         ),
         R.id.nav_stock_items to FragmentInfo(
             StockItemsFragment::class.java,
@@ -40,16 +45,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
     )
 
-    // Maps a timestamp to a menu item
-    private val archivedLists = mutableMapOf<Long, Int>()
+    // Maps a shopping list to a menu item id
+    private val activeLists = mutableMapOf<ShoppingList, Int>()
+
+    // Maps an archived shopping list to a menu item id
+    private val archivedLists = mutableMapOf<ArchivedListInfo, Int>()
+
     // holds the menu item value for the next dynamic menu item created
-    // based on archived lists
-    private var nextArchivedListMenuItemId = 1
+    private var nextDynamicMenuItemId = 1
+
+    // Flag used to control whether or not it is necessary to navigate to start
+    // when lists data is ready. We only navigate to start on the very first time
+    private var hasPerformedInitialNavigation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        hasPerformedInitialNavigation = savedInstanceState?.getBoolean(
+            INITIAL_NAVIGATION_KEY,
+            false
+        ) ?: false
 
         val toggle = ActionBarDrawerToggle(
             this,
@@ -63,11 +80,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         supportFragmentManager.addOnBackStackChangedListener(this::fragmentBackStackChanged)
         navView.setNavigationItemSelectedListener(this)
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            // Only navigate to start if this is the first launch, and not on screen rotation
-            // If back stack is empty, this is the first launch
-            navigateToStart()
-        }
+
+        viewModel.activeLists.observe(this, Observer {
+            it?.let { onActiveListsChanged(it) }
+
+            if (!hasPerformedInitialNavigation) {
+                hasPerformedInitialNavigation = true
+                navigateToStart()
+            }
+        })
 
         viewModel.archivedListsTimestamps.observe(this, Observer {
             it?.let { onArchivedListsChanged(it) }
@@ -75,40 +96,110 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun navigateToStart() {
-        navigateToFragment(R.id.nav_shopping_list)
+        // If there are Lists created, navigate to the first one available,
+        // otherwise navigate to the 'New List' screen
+        if (activeLists.isEmpty()) {
+            navigateToFragment(R.id.nav_create_shopping_list)
+        } else {
+            val (list, itemId) = activeLists.toList().first()
+            navigateToFragment(
+                itemId,
+                bundleOf(ShoppingListFragment.ARG_LIST_NAME to list.listName)
+            )
+        }
     }
 
-    private fun onArchivedListsChanged(listTimestamps: List<Long>) {
-        val newLists = listTimestamps.filterNot { archivedLists.containsKey(it) }
-        val removedLists = archivedLists.keys.filterNot { listTimestamps.contains(it) }
+    private fun onActiveListsChanged(newActiveLists: List<ShoppingList>) {
+        val (addedLists, removedLists) = onDynamicItemsChanged(newActiveLists, activeLists)
 
-        // If the removed list is also the currently selected item,
-        // just navigate back to the start
-        val currentItemRemoved = removedLists
-            .mapNotNull { archivedLists[it] }
-            .any { navView.menu.findItem(it)?.isChecked == true }
-        if (currentItemRemoved) {
-            navigateToStart()
+        val menu = navView.menu.findItem(R.id.active_lists_menu_item).subMenu
+        updateDynamicMenuItems(
+            addedLists,
+            removedLists,
+            activeLists,
+            ShoppingListFragment::class.java,
+            { shoppingList -> shoppingList.listName },
+            menu,
+            R.id.active_group
+        )
+
+        // The only situation where there is a new active list is when it is created
+        // And we need to navigate to the newly created list in this case
+        if (addedLists.size == 1) {
+            val newActiveListName = addedLists[0].listName
+            val newActiveListItemId = activeLists
+                .filter { it.key.listName == newActiveListName }
+                .map { it.value }
+                .first()
+
+            navigateToFragment(
+                newActiveListItemId,
+                bundleOf(ShoppingListFragment.ARG_LIST_NAME to newActiveListName)
+            )
+        }
+    }
+
+    private fun onArchivedListsChanged(newArchivedLists: List<ArchivedListInfo>) {
+        val (addedLists, removedLists) = onDynamicItemsChanged(newArchivedLists, archivedLists)
+
+        val menu = navView.menu.findItem(R.id.history_menu_item).subMenu
+        val titleFor = { info: ArchivedListInfo ->
+            getString(
+                R.string.archived_list_title,
+                info.listName,
+                info.archiveTimestamp.toFormattedDate()
+            )
         }
 
-        updateArchivedLists(newLists, removedLists)
+        updateDynamicMenuItems(
+            addedLists,
+            removedLists,
+            archivedLists,
+            ArchivedShoppingListFragment::class.java,
+            titleFor,
+            menu,
+            R.id.archived_group
+        )
     }
 
-    private fun updateArchivedLists(toAdd: List<Long>, toRemove: List<Long>) {
-        val archivedListsMenu = navView.menu.findItem(R.id.history_menu_item).subMenu
+    private fun <E> onDynamicItemsChanged(
+        newItems: List<E>,
+        currentItems: Map<E, Int>
+    ): Pair<List<E>, List<E>> {
+        val addedItems = newItems.filterNot { currentItems.containsKey(it) }
+        val removedItems = currentItems.keys.filterNot { newItems.contains(it) }
+
+        return addedItems to removedItems
+    }
+
+    private fun <E> updateDynamicMenuItems(
+        toAdd: List<E>,
+        toRemove: List<E>,
+        allItems: MutableMap<E, Int>,
+        fragmentClass: Class<out Fragment>,
+        titleFor: (E) -> String,
+        menu: Menu,
+        groupId: Int
+    ) {
+        // If the removed item is also the currently selected item,
+        // just navigate back to the start
+        val navigateToStart = toRemove
+            .mapNotNull { allItems[it] }
+            .any { navView.menu.findItem(it)?.isChecked == true }
+
         toRemove.forEach {
-            val itemId = archivedLists[it]
-            itemId?.let { archivedListsMenu.removeItem(it) }
-            archivedLists.remove(it)
+            val itemId = allItems[it]
+            itemId?.let { menu.removeItem(it) }
+            allItems.remove(it)
         }
 
         toAdd.forEach {
-            val itemId = nextArchivedListMenuItemId++
-            val itemTitle = it.toFormattedDate()
+            val itemId = nextDynamicMenuItemId++
+            val itemTitle = titleFor(it)
             val itemTag = it.toString()
 
-            val addedItem = archivedListsMenu.add(
-                R.id.archived_group,
+            val addedItem = menu.add(
+                groupId,
                 itemId,
                 Menu.NONE,
                 itemTitle
@@ -116,8 +207,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             addedItem.isCheckable = true
             addedItem.isChecked = false
-            fragmentsMap[itemId] = FragmentInfo(ArchivedShoppingListFragment::class.java, itemTag)
-            archivedLists[it] = itemId
+            fragmentsMap[itemId] = FragmentInfo(fragmentClass, itemTag)
+            allItems[it] = itemId
+        }
+
+        // Navigate to start if needed
+        if (navigateToStart) {
+            navigateToStart()
         }
     }
 
@@ -135,6 +231,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putBoolean(INITIAL_NAVIGATION_KEY, hasPerformedInitialNavigation)
     }
 
     override fun onBackPressed() {
@@ -170,21 +271,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return if (archivedLists.values.contains(item.itemId)) {
-            // We are trying to navigate to an archived list.
-            // Provide the timestamp as the argument for the fragment
-            val timestamp = archivedLists
-                .filter { it.value == item.itemId }
-                .map { it.key }
-                .first()
-
-            navigateToFragment(
-                item.itemId,
-                bundleOf(ArchivedShoppingListFragment.ARG_TIMESTAMP to timestamp)
-            )
-        } else {
-            navigateToFragment(item.itemId)
+        // Some menu items need to pass arguments to the target fragment,
+        // get the arguments here if that is the case
+        val args = when {
+            archivedLists.values.contains(item.itemId) -> {
+                val info = getDynamicItemInfo(archivedLists, item.itemId)
+                bundleOf(
+                    ArchivedShoppingListFragment.ARG_TIMESTAMP to info.archiveTimestamp,
+                    ArchivedShoppingListFragment.ARG_LIST_NAME to info.listName
+                )
+            }
+            activeLists.values.contains(item.itemId) -> {
+                val info = getDynamicItemInfo(activeLists, item.itemId)
+                bundleOf(ShoppingListFragment.ARG_LIST_NAME to info.listName)
+            }
+            else -> null
         }
+
+        return navigateToFragment(item.itemId, args)
+    }
+
+    private fun <E> getDynamicItemInfo(dynamicItems: Map<E, Int>, menuItemId: Int): E {
+        return dynamicItems
+            .filter { it.value == menuItemId }
+            .map { it.key }
+            .first()
     }
 
     private fun navigateToFragment(id: Int, args: Bundle? = null): Boolean {

@@ -19,6 +19,7 @@ import kotlinx.android.parcel.Parcelize
     )]
 )
 data class ArchivedShoppingListItem(
+    val listName: String,
     val stockItemId: Int,
     val name: String,
     val icon: Icon = Icon.NONE,

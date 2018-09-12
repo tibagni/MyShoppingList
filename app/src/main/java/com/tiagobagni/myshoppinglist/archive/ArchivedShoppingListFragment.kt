@@ -16,6 +16,7 @@ import org.koin.android.architecture.ext.viewModel
 class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Callback {
     companion object {
         const val ARG_TIMESTAMP = "timestamp"
+        const val ARG_LIST_NAME = "listName"
     }
 
     init {
@@ -25,6 +26,7 @@ class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Call
     private val fabProvider by lazy { activity as FabProvider }
     private val archivedShoppingListAdapter = ArchivedShoppingListAdapter()
     private val timestamp by lazy { arguments?.get(ARG_TIMESTAMP) as Long }
+    private val listName by lazy { arguments?.get(ARG_LIST_NAME) as String }
 
     private val viewModel by viewModel<ArchivedShoppingListViewModel>()
 
@@ -38,7 +40,11 @@ class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Call
         super.onActivityCreated(savedInstanceState)
 
         fabProvider.hideFab()
-        activity?.title = timestamp.toFormattedDate()
+        activity?.title = getString(
+            R.string.archived_list_title,
+            listName,
+            timestamp.toFormattedDate()
+        )
         viewModel.getArchivedItemsFrom(timestamp).observe(this, Observer {
             archivedShoppingListAdapter.updateData(it ?: emptyList())
             if (it?.isNotEmpty() == true) {

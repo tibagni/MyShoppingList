@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "dc1096c2a74fcf4ba03a9726e7c1868f",
+    "identityHash": "bfa5b311eb732ec8055e910c767d2129",
     "entities": [
       {
         "tableName": "stock_items",
@@ -37,9 +37,35 @@
         "foreignKeys": []
       },
       {
-        "tableName": "shopping_list_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `checked` INTEGER NOT NULL, `pricePaid` REAL NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "active_shopping_list",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`listName` TEXT NOT NULL, PRIMARY KEY(`listName`))",
         "fields": [
+          {
+            "fieldPath": "listName",
+            "columnName": "listName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "listName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "shopping_list_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`listName` TEXT NOT NULL, `stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `checked` INTEGER NOT NULL, `pricePaid` REAL NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`listName`) REFERENCES `active_shopping_list`(`listName`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "listName",
+            "columnName": "listName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "stockItemId",
             "columnName": "stockItemId",
@@ -101,13 +127,30 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "active_shopping_list",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "listName"
+            ],
+            "referencedColumns": [
+              "listName"
+            ]
           }
         ]
       },
       {
         "tableName": "archived_shopping_list_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `pricePaid` REAL NOT NULL, `archiveTimestamp` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`listName` TEXT NOT NULL, `stockItemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL, `comment` TEXT NOT NULL, `pricePaid` REAL NOT NULL, `archiveTimestamp` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY(`stockItemId`) REFERENCES `stock_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
+          {
+            "fieldPath": "listName",
+            "columnName": "listName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "stockItemId",
             "columnName": "stockItemId",
@@ -175,7 +218,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"dc1096c2a74fcf4ba03a9726e7c1868f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bfa5b311eb732ec8055e910c767d2129\")"
     ]
   }
 }

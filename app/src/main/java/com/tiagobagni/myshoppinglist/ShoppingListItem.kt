@@ -11,14 +11,22 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(
-    tableName = "shopping_list_items", foreignKeys = [ForeignKey(
-        entity = StockItem::class,
-        parentColumns = ["id"],
-        childColumns = ["stockItemId"],
-        onDelete = CASCADE
-    )]
+    tableName = "shopping_list_items", foreignKeys = [
+        ForeignKey(
+            entity = StockItem::class,
+            parentColumns = ["id"],
+            childColumns = ["stockItemId"],
+            onDelete = CASCADE
+        ),
+        ForeignKey(
+            entity = ShoppingList::class,
+            parentColumns = ["listName"],
+            childColumns = ["listName"],
+            onDelete = CASCADE
+        )]
 )
 data class ShoppingListItem(
+    val listName: String,
     val stockItemId: Int,
     val name: String,
     val icon: Icon = Icon.NONE,
