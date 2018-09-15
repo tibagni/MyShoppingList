@@ -20,4 +20,7 @@ interface ShoppingListItemDao {
 
     @Query("delete from shopping_list_items where listName = :listName")
     fun deleteAll(listName: String)
+
+    @Delete
+    fun delete(items: List<ShoppingListItem>)
 }

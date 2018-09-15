@@ -10,14 +10,18 @@ import com.tiagobagni.myshoppinglist.extensions.AdapterClickListener
 import com.tiagobagni.myshoppinglist.extensions.ClickListener
 import com.tiagobagni.myshoppinglist.extensions.toCurrencyFormat
 import com.tiagobagni.myshoppinglist.icons.Icon
+import com.tiagobagni.myshoppinglist.stock.StockItem
+import com.tiagobagni.selectionmode.SelectionModeHelper
+import com.tiagobagni.selectionmode.SelectionModeVHClickListener
+import com.tiagobagni.selectionmode.SelectionModeViewHolder
 import kotlinx.android.synthetic.main.list_header.view.*
 import kotlinx.android.synthetic.main.shopping_list_item.view.*
 
 class ShoppingListAdapter(
-    private val clickListener: ClickListener<ShoppingListItem>,
-    private val longClickListener: ClickListener<ShoppingListItem>
+    private val listener: ClickListener<ShoppingListItem>,
+    private val selectionModeHelper: SelectionModeHelper
 ) : RecyclerListAdapter<AdapterItem<ShoppingListItem>, ShoppingListAdapter.ViewHolder>(),
-    AdapterClickListener {
+    SelectionModeVHClickListener {
     private val headerItem = AdapterItem<ShoppingListItem>(null, TYPE_HEADER)
 
     companion object {
@@ -25,11 +29,20 @@ class ShoppingListAdapter(
         const val TYPE_HEADER = 1
     }
 
+    init {
+        selectionModeHelper.onSelectionCleared = { clearItems(it) }
+    }
+
     class ViewHolder(
         private val view: View,
-        private val clickListener: AdapterClickListener
-    ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
-        fun bind(item: ShoppingListItem) {
+        selectionModeHelper: SelectionModeHelper,
+        clickListener: SelectionModeVHClickListener
+    ) : SelectionModeViewHolder<ShoppingListItem>(
+        view,
+        selectionModeHelper,
+        clickListener
+    ) {
+        override fun onBind(item: ShoppingListItem) {
             with(view) {
                 productName.text = item.name
                 comments.text = item.comment
@@ -43,8 +56,6 @@ class ShoppingListAdapter(
                     pricePaid.visibility = View.GONE
                 }
 
-                setOnClickListener(this@ViewHolder)
-                setOnLongClickListener(this@ViewHolder)
                 if (item.icon != Icon.NONE) {
                     itemIcon.setImageResource(item.icon.resId)
                 }
@@ -55,15 +66,6 @@ class ShoppingListAdapter(
 
         fun bindHeader(headerRes: Int) {
             view.header.setText(headerRes)
-        }
-
-        override fun onClick(view: View?) {
-            clickListener.onItemClicked(layoutPosition)
-        }
-
-        override fun onLongClick(v: View?): Boolean {
-            clickListener.onItemLongClicked(layoutPosition)
-            return true
         }
     }
 
@@ -86,7 +88,7 @@ class ShoppingListAdapter(
         } else {
             inflater.inflate(R.layout.shopping_list_item, parent, false)
         }
-        return ViewHolder(view, this)
+        return ViewHolder(view, selectionModeHelper, this)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -97,14 +99,20 @@ class ShoppingListAdapter(
         }
     }
 
-    override fun onItemClicked(itemPosition: Int) {
-        val item = list[itemPosition].value
-        item?.let { clickListener(it) }
+    override fun onClick(position: Int, view: View) {
+        val item = list[position].value
+        item?.let { listener(it) }
     }
 
-    override fun onItemLongClicked(itemPosition: Int) {
-        val item = list[itemPosition].value
-        item?.let { longClickListener(it) }
+    private fun clearItems(rangesCleared: Set<Pair<Int, Int>>) {
+        for ((from, to) in rangesCleared) {
+            if (from == to) {
+                notifyItemChanged(from)
+            } else {
+                val count = (to - from) + 1
+                notifyItemRangeChanged(from, count)
+            }
+        }
     }
 
     override fun onPrepareNewData(newData: List<AdapterItem<ShoppingListItem>>):
@@ -120,4 +128,16 @@ class ShoppingListAdapter(
     }
 
     override fun getItemViewType(position: Int) = list[position].viewType
+
+    fun getItems(itemIndices: Collection<Int>): List<ShoppingListItem> {
+        return list.filterIndexed { index, _ -> itemIndices.contains(index) }
+            .mapNotNull { it.value }
+    }
+
+    fun selectAll() {
+        selectionModeHelper.markAsSelected(list.mapIndexed { index, _ -> index })
+        // Here we need to update the state of all views, so, it is fine to call
+        // notifyDataSetChanged
+        notifyDataSetChanged()
+    }
 }

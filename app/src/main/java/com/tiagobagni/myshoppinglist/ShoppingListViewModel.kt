@@ -41,13 +41,17 @@ class ShoppingListViewModel(
         repository.addItems(newItems)
     }
 
+    fun deleteItems(newItems: List<ShoppingListItem>) {
+        repository.deleteItems(newItems)
+    }
+
     fun archiveList() {
         val allItems = shoppingList.value
         allItems?.let {
             archivedListsManager.archive(it)
         }
 
-        clear()
+        deleteList()
     }
 
     fun updateItem(item: ShoppingListItem, f: ShoppingListItemUpdater.() -> Unit) {
@@ -56,7 +60,7 @@ class ShoppingListViewModel(
         repository.updateItem(updater.item)
     }
 
-    fun clear() {
+    fun deleteList() {
         repository.deleteShoppingList(ShoppingList(listName))
     }
 

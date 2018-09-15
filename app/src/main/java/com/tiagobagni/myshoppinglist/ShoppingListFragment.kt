@@ -15,6 +15,8 @@ import com.tiagobagni.myshoppinglist.stock.StockItem
 import kotlinx.android.synthetic.main.fragment_shopping_list.*
 import org.koin.android.architecture.ext.viewModel
 import android.widget.TextView
+import com.tiagobagni.selectionmode.ChoiceModeHelperCallback
+import com.tiagobagni.selectionmode.SelectionModeHelper
 
 
 class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
@@ -29,12 +31,29 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         private const val PRICE_DIALOG = 1
 
         private const val ARCHIVE_CONFIRM_DIALOG = 0
-        private const val CLEAR_CONFIRM_DIALOG = 1
+        private const val DELETE_LIST_CONFIRM_DIALOG = 1
+        private const val DELETE_SELECTED_CONFIRM_DIALOG = 2
     }
+
+    private var actionMode: ActionMode? = null
+    private val selectionModeHelper = SelectionModeHelper(object : ChoiceModeHelperCallback {
+        override fun onSelectionChanged() {
+            updateSelectionCount()
+            updateMenu()
+        }
+
+        override fun onEnterSelectionMode() {
+            startSelectionMode()
+        }
+
+        override fun onExitSelectionMode() {
+            actionMode?.finish()
+        }
+    })
 
     private val shoppingListAdapter = ShoppingListAdapter(
         this::onItemClicked,
-        this::onItemLongClicked
+        selectionModeHelper
     )
     private val viewModel by viewModel<ShoppingListViewModel>(
         parameters = { mapOf("listName" to listName) }
@@ -45,8 +64,21 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
     private var snackbar: Snackbar? = null
     private var menu: Menu? = null
 
+    private var updateMenu = false
+
     init {
         setHasOptionsMenu(true)
+    }
+
+    private fun updateSelectionCount() {
+        actionMode?.title = selectionModeHelper.selectedCount.toString()
+    }
+
+    private fun updateMenu() {
+        val canSelectAll = selectionModeHelper.selectedCount != shoppingListAdapter.itemCount
+        val canComment = selectionModeHelper.selectedCount == 1
+        actionMode?.menu?.findItem(R.id.action_select_all)?.isVisible = canSelectAll
+        actionMode?.menu?.findItem(R.id.action_comment)?.isVisible = canComment
     }
 
     override fun onCreateView(
@@ -72,7 +104,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_delete -> {
-                showConfirmClearDialog()
+                showConfirmDeleteListDialog()
                 true
             }
             R.id.action_archive -> {
@@ -83,9 +115,44 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         }
     }
 
-    private fun showConfirmClearDialog() {
+    override fun onSaveInstanceState(outState: Bundle) {
+        selectionModeHelper.saveState(outState)
+    }
+
+    private fun startSelectionMode() {
+        actionMode = activity?.startActionMode(object : ActionMode.Callback {
+            override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+                when (item.itemId) {
+                    R.id.action_comment -> {
+                        onCommentSelection()
+                        return true
+                    }
+                    R.id.action_delete -> {
+                        showConfirmDeleteSelectedDialog()
+                        return true
+                    }
+                    R.id.action_select_all -> {
+                        shoppingListAdapter.selectAll()
+                        return true
+                    }
+                }
+                return false
+            }
+
+            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+                mode.menuInflater.inflate(R.menu.menu_context_shopping_list, menu)
+                return true
+            }
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = true
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                selectionModeHelper.cancelSelectionMode()
+            }
+        })
+    }
+
+    private fun showConfirmDeleteListDialog() {
         val dialog = ConfirmationDialogFragment.newInstance(
-            CLEAR_CONFIRM_DIALOG,
+            DELETE_LIST_CONFIRM_DIALOG,
             getString(R.string.delete_title),
             getString(R.string.delete_list_msg)
         )
@@ -103,6 +170,17 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         dialog.show(childFragmentManager, "confirmArchive")
     }
 
+
+    private fun showConfirmDeleteSelectedDialog() {
+        val dialog = ConfirmationDialogFragment.newInstance(
+            DELETE_SELECTED_CONFIRM_DIALOG,
+            getString(R.string.delete_title),
+            getString(R.string.delete_items_msg)
+        )
+
+        dialog.show(childFragmentManager, "confirmDeleteSelected")
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -110,6 +188,10 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
             Observer {
                 val list = it?.map { AdapterItem(it, ShoppingListAdapter.TYPE_ITEM) } ?: emptyList()
                 shoppingListAdapter.updateData(list)
+                if (updateMenu) {
+                    updateMenu = false
+                    updateMenu()
+                }
             })
 
         viewModel.checkedItems.observe(this, Observer {
@@ -139,6 +221,15 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
             startActivityForResult<AddStockItemActivity>(ADD_STOCK_ITEM_REQUEST_CODE)
         }
         mainActivity.title = listName
+
+        savedInstanceState?.let {
+            selectionModeHelper.restoreFromState(it)
+            if (selectionModeHelper.isInSelectionMode()) {
+                startSelectionMode()
+                updateSelectionCount()
+                updateMenu = true
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -181,7 +272,9 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         }
     }
 
-    private fun onItemLongClicked(item: ShoppingListItem) {
+    private fun onCommentSelection() {
+        // This option is only available when one single item is selected
+        val item = shoppingListAdapter.getItems(selectionModeHelper.selectedItems).first()
         val commentDialog = InputDialogFragment.newInstance(
             dialogId = COMMENT_DIALOG,
             item = item,
@@ -190,6 +283,12 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
             defaultInput = item.comment
         )
         commentDialog.show(childFragmentManager, "comment")
+    }
+
+    private fun onDeleteSelection() {
+        val items = shoppingListAdapter.getItems(selectionModeHelper.selectedItems)
+        viewModel.deleteItems(items)
+        actionMode?.finish()
     }
 
     private fun showTotalSpent(totalSpent: Double) {
@@ -227,8 +326,9 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
 
     override fun onConfirmed(dialogId: Int) {
         when (dialogId) {
-            CLEAR_CONFIRM_DIALOG -> viewModel.clear()
+            DELETE_LIST_CONFIRM_DIALOG -> viewModel.deleteList()
             ARCHIVE_CONFIRM_DIALOG -> viewModel.archiveList()
+            DELETE_SELECTED_CONFIRM_DIALOG -> onDeleteSelection()
         }
     }
 }

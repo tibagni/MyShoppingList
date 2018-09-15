@@ -24,6 +24,8 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
     private val mainActivity by lazy { activity as? MainActivity }
     private val addStockItemActivity by lazy { activity as? AddStockItemActivity }
 
+    private var updateMenu = false
+
     private var actionMode: ActionMode? = null
     private val selectionModeHelper = SelectionModeHelper(object : ChoiceModeHelperCallback {
         override fun onSelectionChanged() {
@@ -66,6 +68,10 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
 
         viewModel.stockItemsList.observe(this, Observer {
             shoppingItemsAdapter.updateData(it ?: emptyList())
+            if (updateMenu) {
+                updateMenu = false
+                updateMenu()
+            }
         })
 
         fabProvider.configureFab(R.drawable.ic_add_list) {
@@ -79,6 +85,7 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
             if (selectionModeHelper.isInSelectionMode()) {
                 startSelectionMode()
                 updateSelectionCount()
+                updateMenu = true
             }
         }
     }

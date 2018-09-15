@@ -32,6 +32,12 @@ class ShoppingListRepository(database: MyShoppingListDatabase) {
         }
     }
 
+    fun deleteItems(items: List<ShoppingListItem>) {
+        doAsync {
+            shoppingListItemDao.delete(items)
+        }
+    }
+
     fun updateItem(item: ShoppingListItem) {
         doAsync {
             shoppingListItemDao.updateItem(item)
