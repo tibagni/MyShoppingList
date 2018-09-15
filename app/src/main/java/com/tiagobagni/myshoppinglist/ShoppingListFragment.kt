@@ -71,7 +71,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.action_clear -> {
+            R.id.action_delete -> {
                 showConfirmClearDialog()
                 true
             }
@@ -90,7 +90,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
             getString(R.string.delete_list_msg)
         )
 
-        dialog.show(childFragmentManager, "confirmClear")
+        dialog.show(childFragmentManager, "confirmDelete")
     }
 
     private fun showConfirmArchiveDialog() {
