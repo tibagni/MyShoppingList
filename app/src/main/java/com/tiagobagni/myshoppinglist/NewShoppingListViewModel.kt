@@ -1,6 +1,6 @@
 package com.tiagobagni.myshoppinglist
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 
 class NewShoppingListViewModel(private val repository: ShoppingListRepository): ViewModel() {
 

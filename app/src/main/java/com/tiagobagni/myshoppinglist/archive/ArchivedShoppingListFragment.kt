@@ -1,9 +1,9 @@
 package com.tiagobagni.myshoppinglist.archive
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import com.tiagobagni.myshoppinglist.ConfirmationDialogFragment
 import com.tiagobagni.myshoppinglist.FabProvider
@@ -55,7 +55,8 @@ class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Call
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        archivedShoppingList.layoutManager = LinearLayoutManager(context)
+        archivedShoppingList.layoutManager =
+            LinearLayoutManager(context)
         archivedShoppingList.emptyView = emptyView
         archivedShoppingList.adapter = archivedShoppingListAdapter
     }
@@ -64,8 +65,8 @@ class ArchivedShoppingListFragment : Fragment(), ConfirmationDialogFragment.Call
         inflater.inflate(R.menu.menu_archived_shopping_list, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.action_delete -> {
                 showDeleteConfirmationDialog()
                 true

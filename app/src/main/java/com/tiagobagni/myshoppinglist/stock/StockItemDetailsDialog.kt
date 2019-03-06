@@ -1,9 +1,9 @@
 package com.tiagobagni.myshoppinglist.stock
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +62,7 @@ class StockItemDetailsDialog: DialogFragment() {
 
         viewModel.getArchivedItemsOf(itemId).observe(this, Observer {
             updateView(it ?: emptyList())
-            dialog.window.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            dialog?.window?.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         })
     }
 

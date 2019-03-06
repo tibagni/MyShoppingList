@@ -1,7 +1,7 @@
 package com.tiagobagni.myshoppinglist.di
 
-import android.arch.persistence.room.Room
-import android.support.v7.preference.PreferenceManager
+import androidx.room.Room
+import androidx.preference.PreferenceManager
 import com.tiagobagni.myshoppinglist.*
 import com.tiagobagni.myshoppinglist.archive.ArchivedListsManager
 import com.tiagobagni.myshoppinglist.archive.ArchivedShoppingListViewModel

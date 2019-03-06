@@ -1,8 +1,8 @@
 package com.tiagobagni.myshoppinglist.stock
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import android.text.TextUtils
 
 class StockItemsViewModel(private val stockRepository: StockRepository) : ViewModel() {

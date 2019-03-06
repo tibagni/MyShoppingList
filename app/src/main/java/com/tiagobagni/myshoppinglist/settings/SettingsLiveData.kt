@@ -1,6 +1,6 @@
 package com.tiagobagni.myshoppinglist.settings
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import android.content.SharedPreferences
 
 class SettingsLiveData(private val sharedPreferences: SharedPreferences): LiveData<String>(),

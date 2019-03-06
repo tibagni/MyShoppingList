@@ -2,9 +2,9 @@ package com.tiagobagni.myshoppinglist.settings
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.preference.ListPreference
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceFragmentCompat
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.tiagobagni.myshoppinglist.FabProvider
 import com.tiagobagni.myshoppinglist.R
 import com.tiagobagni.myshoppinglist.analytics.EventLogger

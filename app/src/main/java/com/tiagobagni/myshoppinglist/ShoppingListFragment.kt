@@ -1,11 +1,11 @@
 package com.tiagobagni.myshoppinglist
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import com.tiagobagni.myshoppinglist.adapter.AdapterItem
@@ -87,22 +87,22 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_shopping_list, null)
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         // This can run after the LiveData comes with the updated value
         // So, to make sure we always initialize the menu correctly,
         // read the showArchiveOption here too so we don't override
         // the correct state with the default state
-        menu?.findItem(R.id.action_archive)?.isVisible =
+        menu.findItem(R.id.action_archive)?.isVisible =
                 viewModel.showArchiveOption.value ?: false
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_shopping_list, menu)
         this.menu = menu
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.action_delete -> {
                 showConfirmDeleteListDialog()
                 true
@@ -295,7 +295,7 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
         val message = getString(R.string.total_spent, totalSpent.toCurrencyFormat())
         snackbar = shoppingList.showCustomSnack(message, Snackbar.LENGTH_INDEFINITE) {
             setBackgroundColor(getColor(R.color.background_material_light))
-            val snackBarText = findViewById<TextView>(android.support.design.R.id.snackbar_text)
+            val snackBarText = findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
             snackBarText.setTextColor(getColor(R.color.secondary_text_default_material_light))
         }
     }

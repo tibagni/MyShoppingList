@@ -1,7 +1,7 @@
 package com.tiagobagni.myshoppinglist.settings
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import android.content.SharedPreferences
 
 class SettingsRepository(

@@ -1,6 +1,6 @@
 package com.tiagobagni.myshoppinglist.archive
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 
 class ArchivedShoppingListViewModel(private val archivedRepository: ArchivedShoppingListRepository) :
     ViewModel() {

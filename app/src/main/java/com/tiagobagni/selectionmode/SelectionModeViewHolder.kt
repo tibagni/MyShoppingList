@@ -1,6 +1,6 @@
 package com.tiagobagni.selectionmode
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 abstract class SelectionModeViewHolder<in T>(
