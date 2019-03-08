@@ -13,7 +13,16 @@ import com.tiagobagni.myshoppinglist.R
 import com.tiagobagni.selectionmode.SelectionModeHelper
 import com.tiagobagni.selectionmode.ChoiceModeHelperCallback
 import kotlinx.android.synthetic.main.fragment_stock_items.*
+import org.jetbrains.anko.itemsSequence
 import org.koin.android.architecture.ext.viewModel
+
+import android.graphics.PorterDuff
+
+import android.graphics.Color
+import android.graphics.PorterDuffColorFilter
+import com.tiagobagni.myshoppinglist.extensions.getThemeColor
+import com.tiagobagni.myshoppinglist.extensions.tintIcons
+
 
 class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
     SearchView.OnQueryTextListener, ConfirmationDialogFragment.Callback {
@@ -150,6 +159,10 @@ class StockItemsFragment : Fragment(), NewStockDialogFragment.Callback,
                 }
 
                 menu?.removeItem(removeItem)
+                val iconColor = context?.getThemeColor(R.attr.colorOnSecondary)
+                iconColor?.let {
+                    menu?.tintIcons(it)
+                }
                 return true
             }
 

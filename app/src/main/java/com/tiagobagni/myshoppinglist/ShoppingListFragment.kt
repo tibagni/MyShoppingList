@@ -2,6 +2,7 @@ package com.tiagobagni.myshoppinglist
 
 import androidx.lifecycle.Observer
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.fragment.app.Fragment
@@ -17,6 +18,13 @@ import org.koin.android.architecture.ext.viewModel
 import android.widget.TextView
 import com.tiagobagni.selectionmode.ChoiceModeHelperCallback
 import com.tiagobagni.selectionmode.SelectionModeHelper
+import android.R.attr.data
+import androidx.annotation.ColorInt
+import com.google.android.material.resources.MaterialAttributes.resolveAttribute
+import android.content.res.Resources.Theme
+import android.util.TypedValue
+
+
 
 
 class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
@@ -143,7 +151,14 @@ class ShoppingListFragment : Fragment(), InputDialogFragment.Callback,
                 mode.menuInflater.inflate(R.menu.menu_context_shopping_list, menu)
                 return true
             }
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = true
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                val iconColor = context?.getThemeColor(R.attr.colorOnSecondary)
+                iconColor?.let {
+                    menu?.tintIcons(it)
+                }
+
+                return true
+            }
             override fun onDestroyActionMode(mode: ActionMode?) {
                 selectionModeHelper.cancelSelectionMode()
             }

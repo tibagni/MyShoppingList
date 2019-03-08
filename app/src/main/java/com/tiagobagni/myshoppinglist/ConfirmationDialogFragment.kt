@@ -1,7 +1,7 @@
 package com.tiagobagni.myshoppinglist
 
-import android.app.AlertDialog
 import android.app.Dialog
+import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import org.jetbrains.anko.bundleOf
@@ -31,7 +31,7 @@ class ConfirmationDialogFragment : DialogFragment() {
         return AlertDialog.Builder(context!!)
             .setTitle(args[TITLE_ARG] as String)
             .setMessage(args[MESSAGE_ARG] as String)
-            .setPositiveButton(android.R.string.ok, { _, _ -> onPositiveButton() })
+            .setPositiveButton(android.R.string.ok) { _, _ -> onPositiveButton() }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
     }

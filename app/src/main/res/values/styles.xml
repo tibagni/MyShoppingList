@@ -1,26 +1,53 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorPrimaryVariant">@color/light_primaryVariant</item>
+        <item name="colorPrimaryDark">?attr/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/light_onPrimary</item>
+
+        <item name="android:textColorPrimary">?attr/colorOnBackground</item>
+
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorSecondaryVariant">@color/light_secondaryVariant</item>
+        <item name="colorOnSecondary">@color/light_onSecondary</item>
+
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorOnBackground">@color/light_onBackground</item>
+
+        <item name="colorError">@color/light_error</item>
+        <item name="colorOnError">@color/light_onError</item>
+
+        <item name="actionBarTheme">@style/AppTheme.AppBarOverlay</item>
+        <item name="actionBarPopupTheme">@style/AppTheme.PopupOverlay</item>
 
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_close</item>
-        <item name="actionModeBackground">@color/colorAccent</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_action_mode</item>
+        <item name="actionModeBackground">?attr/colorSecondary</item>
+        <item name="actionModeStyle">@style/AppTheme.ActionMode</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar" >
+        <item name="android:drawableTint">?attr/colorControlNormal</item>
+    </style>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
+
+    <style name="AppTheme.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="background">?attr/colorSecondary</item>
+        <item name="titleTextStyle">@style/ActionMode.Title</item>
+        <item name="subtitleTextStyle">@style/ActionMode.Subtitle</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="ActionMode.Title" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="ActionMode.Subtitle" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
 
     <style name="ItemHead">
         <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
